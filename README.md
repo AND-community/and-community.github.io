@@ -20,7 +20,9 @@ download section asking GitHub's API for the latest release.
 | `assets/fonts/` | AND Site Mono and AND Site Slab, with their licence (`OFL.txt`) |
 | `assets/img/`, `favicon.ico` | Icons and share images |
 | `tools/olustur.js` | Generates the pages, `sitemap.xml` and the image templates from one template |
-| `tools/og.html`, `tools/simge.html` | Templates for the share images and the icons (generated) |
+| `tools/og.html` | Template for the share images (generated) |
+| `tools/logo.png` | AND's logo (500×500); the icons are made from it |
+| `tools/simge-uret.js` | Makes the icons from the logo |
 | `tools/sunucu.js` | A small local server for previewing |
 | `tools/yazitipi-hazirla.js` | Builds the fonts from Monaspace |
 
@@ -40,8 +42,16 @@ translation catalogue (`dil/ceviriler`). When the app's home screen changes, upd
 ## Images
 
 `assets/img/og.png` and `og-tr.png` are 1200×630 screenshots of `tools/og.html` (`?dil=tr` for
-Turkish). `assets/img/apple-touch-icon.png` (180×180) and the 32×32 PNG inside `favicon.ico` are
-screenshots of `tools/simge.html`.
+Turkish).
+
+The icons come from AND's logo, `tools/logo.png`. `node tools/simge-uret.js` writes:
+
+- `assets/img/logo.png` (192×192): used in the header, the footer and the share images
+- `favicon.ico`: 16, 32 and 48 px
+- `assets/img/apple-touch-icon.png` (180×180): on the page's dark background, because iOS doesn't
+  show transparency
+
+When the logo changes, run it, then retake the share images.
 
 ## Fonts
 

@@ -165,7 +165,15 @@ h1, h2, h3 { text-wrap: balance; }
   font-size: 0.9375rem;
 }
 
-.marka { text-decoration: none; }
+/* Logo (küre) ve "AND" yan yana; üst çubukta ve alt bilgide aynı. */
+.marka {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25ch;
+  text-decoration: none;
+}
+
+.marka img { display: block; }
 
 .ust-nav ul,
 .ust-sag {
@@ -995,7 +1003,7 @@ h3 {
 .alt-ust {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 0.75rem 3ch;
 }
 

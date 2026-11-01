@@ -20,6 +20,12 @@ const IMZA_ANAHTARI = '40f36782755018ac90475013594691b41886813ab842148d537b4f44f
 const e = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const a = (href, metin, ek = '') => `<a href="${e(href)}"${ek}>${metin}</a>`;
 
+// AND'ın logosu (küre) ve ondan üretilen simgeler: node tools/simge-uret.js
+const SIMGELER = `<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/assets/img/logo.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">`;
+const MARKA = '<img src="/assets/img/logo.png" width="28" height="28" alt=""><span class="hap">AND</span>';
+
 // AND'ın yerleşik temaları (internal/ui/theme.go Presets): vurgu, seçim
 // zemini, kişi adı ve rozet renkleri; site.css'teki tema blokları aynı
 // değerleri kullanır.
@@ -595,9 +601,7 @@ function bas(m) {
 <link rel="alternate" hreflang="x-default" href="${SITE}/">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0e0c24">
-<link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+${SIMGELER}
 <link rel="preload" href="/assets/fonts/and-site-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/and-site-slab.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -622,7 +626,7 @@ function bas(m) {
 function ust(m) {
   return `<a class="atla" href="#icerik">${e(m.atla)}</a>
 <header class="ust sayfa">
-<a class="marka" href="${m.yol}" aria-label="${e(m.ana)}"><span class="hap">AND</span></a>
+<a class="marka" href="${m.yol}" aria-label="${e(m.ana)}">${MARKA}</a>
 <nav class="ust-nav" aria-label="${e(m.navEtiket)}"><ul>${m.nav.map(([id, t]) => `<li><a href="#${id}">${e(t)}</a></li>`).join('')}</ul></nav>
 <ul class="ust-sag"><li><a href="${DEPO}">GitHub</a></li><li><a href="${m.diger.yol}" hreflang="${m.diger.dil}" lang="${m.diger.dil}">${m.diger.ad}</a></li></ul>
 </header>`;
@@ -639,7 +643,7 @@ ${icerik}
 
 function altBilgi(m) {
   return `<footer class="alt sayfa">
-<div class="alt-ust"><span class="hap">AND</span><p>${e(m.alt.lisans)}</p>
+<div class="alt-ust"><span class="marka">${MARKA}</span><p>${e(m.alt.lisans)}</p>
 <ul class="alt-nav" aria-label="${e(m.altNavEtiket)}">${m.alt.baglantilar.map(([h, t]) => `<li>${a(h, e(t))}</li>`).join('')}<li><a href="${m.diger.yol}" hreflang="${m.diger.dil}" lang="${m.diger.dil}">${m.diger.ad}</a></li></ul></div>
 <p class="alt-gizlilik">${e(m.alt.gizlilik)}</p>
 </footer>`;
@@ -711,12 +715,12 @@ function bulunamadi() {
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0e0c24">
-<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+${SIMGELER}
 <link rel="stylesheet" href="/assets/css/site.css">
 <script>try{var t=localStorage.getItem("and-tema");if(/^(klasik|turkuaz|gece-moru|kehribar|orman|mono)$/.test(t))document.documentElement.dataset.tema=t}catch(e){}</script>
 </head>
 <body>
-<header class="ust sayfa"><a class="marka" href="/" aria-label="AND home"><span class="hap">AND</span></a></header>
+<header class="ust sayfa"><a class="marka" href="/" aria-label="AND home">${MARKA}</a></header>
 <main class="sayfa">
 <div class="yok">
 <p class="bildirim">✗ 404</p>
@@ -764,30 +768,20 @@ html, body { width: 1200px; height: 630px; margin: 0; overflow: hidden; backgrou
 .og h1 { max-width: 22ch; margin: auto 0 20px; color: var(--text); font: 650 62px/1.04 var(--slab); letter-spacing: -0.03em; }
 .og p { margin: 0; color: var(--soft); font: 400 23px/1.5 var(--mono); }
 .og .adres { position: absolute; right: 72px; top: 64px; color: var(--accent-ink); font: 400 22px var(--mono); }
+.og-marka { display: flex; align-items: center; gap: 36px; }
+.og-marka img { display: block; width: 144px; height: 144px; }
 </style>
 </head>
 <body>
 <div class="og">
 <div class="og-ust"><span><span class="hap">AND</span></span><span class="surum">${SURUM}</span></div>
-<pre class="t-amblem" aria-hidden="true">${amblem()}</pre>
+<div class="og-marka"><img src="/assets/img/logo.png" alt=""><pre class="t-amblem" aria-hidden="true">${amblem()}</pre></div>
 <span class="adres">and-community.github.io</span>
 <h1 data-tr="${e(M.tr.h1)}">${e(M.en.h1)}</h1>
 <p data-tr="Terminalde eşten eşe forum, sohbet ve kişisel siteler. Ücretsiz ve açık kaynak.">Peer-to-peer forum, chat and personal sites in your terminal. Free and open source.</p>
 </div>
 <script>if (new URLSearchParams(location.search).get('dil') === 'tr') { document.documentElement.lang = 'tr'; document.querySelectorAll('[data-tr]').forEach((d) => { d.textContent = d.dataset.tr; }); }</script>
 </body>
-</html>
-`;
-}
-
-// favicon.svg'nin raster kopyaları için: apple-touch-icon.png (180×180) ve
-// favicon.ico'nun içindeki 32×32 PNG; görüntü pencereyi doldurur.
-function simgeSablonu() {
-  return `<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="robots" content="noindex"><title>AND simgesi</title>
-<style>html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #0e0c24; } img { display: block; width: 100vw; height: 100vh; }</style></head>
-<body><img src="/assets/img/favicon.svg" alt=""></body>
 </html>
 `;
 }
@@ -803,4 +797,3 @@ yaz('tr/index.html', sayfa('tr'));
 yaz('404.html', bulunamadi());
 yaz('sitemap.xml', siteHaritasi());
 yaz('tools/og.html', ogSablonu());
-yaz('tools/simge.html', simgeSablonu());

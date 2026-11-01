@@ -20,7 +20,9 @@ indirme bölümünün son sürümü GitHub'ın API'sine sormasıdır.
 | `assets/fonts/` | AND Site Mono ve AND Site Slab, lisanslarıyla (`OFL.txt`) |
 | `assets/img/`, `favicon.ico` | Simgeler ve paylaşım görselleri |
 | `tools/olustur.js` | Sayfaları, `sitemap.xml`'i ve görsel şablonlarını tek şablondan üretir |
-| `tools/og.html`, `tools/simge.html` | Paylaşım görsellerinin ve simgelerin şablonları (üretilir) |
+| `tools/og.html` | Paylaşım görsellerinin şablonu (üretilir) |
+| `tools/logo.png` | AND'ın logosu (500×500); simgeler ondan üretilir |
+| `tools/simge-uret.js` | Simgeleri logodan üretir |
 | `tools/sunucu.js` | Önizleme için küçük bir yerel sunucu |
 | `tools/yazitipi-hazirla.js` | Yazı tiplerini Monaspace'ten üretir |
 
@@ -40,8 +42,16 @@ kataloğundan (`dil/ceviriler`) gelir. Uygulamanın ana ekranı değişirse bura
 ## Görseller
 
 `assets/img/og.png` ve `og-tr.png`, `tools/og.html`'in 1200×630 ekran görüntüleridir (Türkçesi
-`?dil=tr` ile). `assets/img/apple-touch-icon.png` (180×180) ve `favicon.ico`'nun içindeki 32×32
-PNG, `tools/simge.html`'in ekran görüntüleridir.
+`?dil=tr` ile).
+
+Simgeler AND'ın logosundan (`tools/logo.png`) gelir. `node tools/simge-uret.js` şunları yazar:
+
+- `assets/img/logo.png` (192×192): üst çubukta, alt bilgide ve paylaşım görsellerinde kullanılır
+- `favicon.ico`: 16, 32 ve 48 piksel
+- `assets/img/apple-touch-icon.png` (180×180): iOS saydamlığı göstermediği için sayfanın koyu
+  zemininde
+
+Logo değişirse bunu çalıştır, sonra paylaşım görsellerini yeniden çek.
 
 ## Yazı tipleri
 
