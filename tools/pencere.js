@@ -73,7 +73,7 @@ const R = {
             'Hi! I’m building a small project with libp2p. Once a connection is up, how do you check that a message really comes from who it says?',
             'Right now I do this:',
             { dil: 'go', kod: ['sig := ed25519.Sign(key, data)', 'if !ed25519.Verify(pub, data, sig) {', '    return errors.New("invalid signature")', '}'] },
-            { baglanti: 'https://docs.libp2p.io/concepts/', once: 'Docs: ' },
+            { baglanti: 'https://libp2p.io/', once: 'More on libp2p: ' },
           ],
           yanitlar: [
             ['mehmet', '1h ago', 'I do the same. Deriving the message ID from the signed content also weeds out replayed messages.'],
@@ -190,7 +190,7 @@ const R = {
             'Merhaba! libp2p ile küçük bir proje yapıyorum. Bağlantı kurulduktan sonra bir mesajın gerçekten söylediği kişiden geldiğini nasıl denetliyorsunuz?',
             'Şu an şöyle yapıyorum:',
             { dil: 'go', kod: ['imza := ed25519.Sign(anahtar, veri)', 'if !ed25519.Verify(genel, veri, imza) {', '    return errors.New("imza geçersiz")', '}'] },
-            { baglanti: 'https://docs.libp2p.io/concepts/', once: 'Belgeler için: ' },
+            { baglanti: 'https://libp2p.io/', once: 'libp2p hakkında: ' },
           ],
           yanitlar: [
             ['mehmet', '1 sa önce', 'Ben de aynı yöntemi kullanıyorum. Mesaj kimliğini imzalı içerikten türetmek tekrarlanan mesajları da ayıklıyor.'],

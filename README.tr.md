@@ -15,11 +15,14 @@ indirme bölümünün son sürümü GitHub'ın API'sine sormasıdır.
 |---|---|
 | `index.html`, `tr/index.html` | İngilizce ve Türkçe sayfalar (üretilir) |
 | `404.html` | GitHub Pages'in bilinmeyen adreslerde gösterdiği sayfa (üretilir) |
-| `assets/css/site.css` | Bütün stiller. Renkler AND'ın kendi temalarıdır (AND'da `internal/ui/theme.go`) |
-| `assets/js/site.js` | Tema seçimi, ana ekran kopyasının menüsü, sürüm sorgusu, kopyalama düğmeleri |
+| `assets/css/site.css` | Bütün stiller. Renkler AND'ın on temasıdır (AND'da `ui/theme.go`); masaüstü penceresi kopyası `internal/masaustu/web/uygulama.css`'i izler |
+| `assets/js/site.js` | Tema seçimi, masaüstü penceresi kopyası (ekranlar, forum, ayarlar, dar ekran), sürüm sorgusu, kopyalama düğmeleri |
 | `assets/fonts/` | AND Site Mono ve AND Site Slab, lisanslarıyla (`OFL.txt`) |
 | `assets/img/`, `favicon.ico` | Simgeler ve paylaşım görselleri |
 | `tools/olustur.js` | Sayfaları, `sitemap.xml`'i ve görsel şablonlarını tek şablondan üretir |
+| `tools/pencere.js` | Masaüstü penceresi kopyası: metinleri (`R` tablosu, iki dil) ve HTML'i |
+| `tools/denetle.js` | Üretilen sayfaları denetler: temalar, kopyanın yapısı, metinler, İngilizce/Türkçe eşitliği |
+| `tools/tema-tonlari.js` | Bir temanın koyu ve açık tonlarını mevcut temalar nasıl yapıldıysa öyle türetir |
 | `tools/og.html` | Paylaşım görsellerinin şablonu (üretilir) |
 | `tools/logo.png` | AND'ın logosu (500×500); simgeler ondan üretilir |
 | `tools/simge-uret.js` | Simgeleri logodan üretir |
@@ -28,16 +31,22 @@ indirme bölümünün son sürümü GitHub'ın API'sine sormasıdır.
 
 ## Düzenleme
 
-Bütün metinler `tools/olustur.js`'tedir: `M` tablosu sayfanın, `R` tablosu ana ekran kopyasının
-metinlerini tutar; iki dil hep aynı yapıyı paylaşır. Bir değişiklikten sonra:
+Sayfanın metinleri `tools/olustur.js`'teki `M` tablosunda, kopyanınkiler `tools/pencere.js`'teki
+`R` tablosundadır. İki dil tek şablondan çıkar, hep aynı yapıyı paylaşır. Bir değişiklikten sonra:
 
 ```bash
 node tools/olustur.js
+node tools/denetle.js          # bütün denetimler geçmeli
 node tools/sunucu.js .        # sonra http://127.0.0.1:8123/ adresini aç
 ```
 
-Kopya, AND'ın ana ekranını (`internal/tui/home.go`) taklit eder; metinleri AND'ın çeviri
-kataloğundan (`dil/ceviriler`) gelir. Uygulamanın ana ekranı değişirse burası da güncellenmeli.
+Kopya, AND'ın masaüstü penceresini (AND'da `internal/masaustu/web`) ve AND'la gelen eklentilerin
+o pencerede çizdiği ekranları taklit eder. İkonları uygulamanınkidir; metinleri AND'ın ve
+eklentilerin çeviri kataloglarından (`dil/ceviriler`, `Eklentiler/*/ceviri.json`) gelir.
+Uygulamanın ekranları değişirse `tools/pencere.js` ve `site.css`'teki kopya bölümü de güncellenmeli.
+
+Yeni bir AND teması için renkleri `TEMALAR`'a (`tools/olustur.js`), bir blok `site.css`'e (türetilen
+tonlar için `node tools/tema-tonlari.js`) ve adı `site.js`'e eklenir.
 
 ## Görseller
 

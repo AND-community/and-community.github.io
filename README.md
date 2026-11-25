@@ -15,11 +15,14 @@ download section asking GitHub's API for the latest release.
 |---|---|
 | `index.html`, `tr/index.html` | The English and Turkish pages (generated) |
 | `404.html` | The page GitHub Pages shows for unknown addresses (generated) |
-| `assets/css/site.css` | All styles. The colours are AND's own themes (`internal/ui/theme.go` in AND) |
-| `assets/js/site.js` | Theme switching, the home-screen replica's menu, the release check, copy buttons |
+| `assets/css/site.css` | All styles. The colours are AND's ten themes (`ui/theme.go` in AND); the desktop-window replica follows `internal/masaustu/web/uygulama.css` |
+| `assets/js/site.js` | Theme switching, the desktop-window replica (screens, forum, settings, narrow layout), the release check, copy buttons |
 | `assets/fonts/` | AND Site Mono and AND Site Slab, with their licence (`OFL.txt`) |
 | `assets/img/`, `favicon.ico` | Icons and share images |
 | `tools/olustur.js` | Generates the pages, `sitemap.xml` and the image templates from one template |
+| `tools/pencere.js` | The desktop-window replica: its text (table `R`, both languages) and its HTML |
+| `tools/denetle.js` | Checks the generated pages: themes, the replica's structure, the copy, English/Turkish parity |
+| `tools/tema-tonlari.js` | Derives a theme's darker and lighter tones the way the existing themes were made |
 | `tools/og.html` | Template for the share images (generated) |
 | `tools/logo.png` | AND's logo (500×500); the icons are made from it |
 | `tools/simge-uret.js` | Makes the icons from the logo |
@@ -28,16 +31,23 @@ download section asking GitHub's API for the latest release.
 
 ## Editing
 
-All text is in `tools/olustur.js`: table `M` holds the page copy and table `R` the home-screen
-replica, so the two languages always share one structure. After a change:
+The page copy is table `M` in `tools/olustur.js`; the replica's text is table `R` in
+`tools/pencere.js`. Both languages come from one template, so they always share one structure.
+After a change:
 
 ```bash
 node tools/olustur.js
+node tools/denetle.js          # every check must pass
 node tools/sunucu.js .        # then open http://127.0.0.1:8123/
 ```
 
-The replica copies AND's home screen (`internal/tui/home.go`), and its text comes from AND's
-translation catalogue (`dil/ceviriler`). When the app's home screen changes, update it here too.
+The replica copies AND's desktop window (`internal/masaustu/web` in AND) and the screens the
+bundled plugins draw in it. Its icons are the app's own, and its text comes from AND's and the
+plugins' translation catalogues (`dil/ceviriler`, `Eklentiler/*/ceviri.json`). When the app's
+screens change, update `tools/pencere.js` and the replica's section of `site.css` too.
+
+A new AND theme needs its colours in `TEMALAR` (`tools/olustur.js`), a block in `site.css` (run
+`node tools/tema-tonlari.js` for the derived tones) and its name in `site.js`.
 
 ## Images
 

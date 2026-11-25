@@ -15,7 +15,7 @@ const ORG = 'https://github.com/AND-community';
 const DEPO = `${ORG}/AND`;
 const DOSYA = `${DEPO}/blob/main`;
 const SURUM = 'v0.1.0';
-const GUNCELLEME = '2026-11-01';
+const GUNCELLEME = '2026-11-26';
 const IMZA_ANAHTARI = '40f36782755018ac90475013594691b41886813ab842148d537b4f44fddd89a4';
 
 const e = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -98,13 +98,13 @@ const M = {
   en: {
     dil: 'en', yerel: 'en_US', yol: '/', diger: { dil: 'tr', yol: '/tr/', ad: 'Türkçe' },
     baslik: 'AND: a forum with no server in the middle',
-    aciklama: 'AND is a free, open-source forum, chat and personal-site network that runs in your terminal. It is peer to peer: no accounts and no central server.',
+    aciklama: 'AND is a free, open-source forum, chat and personal-site network with a desktop app and a terminal interface. It is peer to peer: no accounts and no central server.',
     ogResim: '/assets/img/og.png',
     ogAlt: 'The AND emblem and the line: a forum with no server in the middle.',
     atla: 'Skip to content', ana: 'AND home', navEtiket: 'Main', altNavEtiket: 'Footer',
     nav: [['features', 'What’s in it'], ['how-it-works', 'How it works'], ['get-and', 'Get AND'], ['security', 'Security'], ['questions', 'Questions']],
     h1: 'A forum with no server in the middle.',
-    ozet: 'AND runs in your terminal. Topics, chat and private messages travel directly between the people using it, each signed with a key that only its author holds. There are no accounts and no central server.',
+    ozet: 'AND opens in its own window on your computer, or in the terminal. Topics, chat and private messages travel directly between the people using it, each signed with a key that only its author holds. There are no accounts and no central server.',
     cta1: 'Get AND', cta2: 'Source code on GitHub',
     ekranBaslik: 'AND’s desktop window',
     ekranNot: 'This is AND’s desktop window, drawn in HTML with the app’s own colours and text. Pick a screen in the sidebar, open a topic or try a theme. AND also has a full-screen terminal interface: <code>and --terminal</code>.',
@@ -113,16 +113,18 @@ const M = {
       id: 'features', baslik: 'What’s in it',
       giris: 'Everything here runs on your computer and on the computers of the people you talk to.',
       liste: [
+        ['Desktop and terminal', 'AND opens in its own window, with a sidebar, a quick-access palette (Ctrl+K) and its plugins inside. It also has a full-screen terminal interface; both use the same identity and data.'],
         ['Forum', '34 categories. A topic reaches peers the moment it’s posted and deletes itself after 5 days.'],
         ['Chat', 'One public channel. Messages are signed, not encrypted, and kept for 48 hours.'],
         ['Private messages', 'Sent straight to the other person over an encrypted connection. If they’re offline, AND keeps the message and delivers it when they’re back, for up to 7 days.'],
         ['Files', 'Send a file to a peer. Nothing arrives without the recipient’s approval, and interrupted transfers resume.'],
         ['Personal site', 'Publish up to 20 pages of your own. They’re signed and synced like the forum, and your edits reach everyone.'],
         ['Moderation', 'The founder signs moderator certificates. Moderators can delete topics early and ban peers for an hour or for good; every decision is signed and logged.'],
-        ['Plugins', 'Separate programs that extend AND. Each one asks for the permissions it needs the first time you open it.'],
-        ['Themes and languages', 'Six built-in themes, and an interface in Turkish, English, German, Spanish, French and Russian.'],
+        ['Plugins', 'Separate programs that extend AND, grouped by category. In the desktop app they run inside AND’s window, and the bundled ones are drawn with AND’s own components. Each asks for the permissions it needs the first time you open it; add more from a folder, an archive or an https address with and plugin install.'],
+        ['Themes and languages', 'Ten built-in themes and a custom accent colour, and an interface in Turkish, English, German, Spanish, French and Russian.'],
         ['Updates', 'Official releases update themselves and their plugins, and only after the release’s signature checks out.'],
         ['Search', `The ${a(`${ORG}/and-arama-motoru`, 'AND Search Engine')} joins the network as a read-only peer and makes forum, chat and site content searchable from the terminal.`],
+        ['VS Code', 'The AND extension for VS Code brings the forum, chat, private messages and DeltaX into the editor; its Forum tab updates live. Turn the connection on in AND’s Settings › Plugins.'],
       ],
     },
     nasil: {
@@ -136,14 +138,14 @@ const M = {
       ],
       cizimEtiket: 'Diagram: you send a topic to node A and node B; node A passes it on to node C; node D, which was offline, later syncs it from node B.',
       cizimAlt: 'There’s no server in this picture: every box is a computer running AND.',
-      son: 'Nodes find each other through the public libp2p DHT on the internet and through mDNS on your local network. Connections are encrypted with the Noise protocol. If you’re behind a NAT, a relay can carry the encrypted traffic, but it can’t read it.',
+      son: 'Nodes find each other through the public libp2p DHT on the internet and through mDNS on your local network. AND remembers the nodes it has met and asks them for others. Connections are encrypted (TLS 1.3 or Noise). Behind a NAT, AND first tries to connect directly; otherwise a relay carries the encrypted traffic, but it can’t read it.',
     },
     kurulum: {
       id: 'get-and', baslik: 'Get AND',
-      giris: 'AND runs in a terminal on Windows, Linux and macOS.',
+      giris: 'AND runs on Windows, Linux and macOS. On Windows it opens in its own window; on Linux and macOS the same interface opens in your browser. In any terminal, and --terminal opens the terminal interface.',
       yedek: `Every release has a ready-to-run archive for each platform on the ${a(`${DEPO}/releases`, 'Releases page')}.`,
       derleBaslik: 'Build from source',
-      derle: 'You need Go 1.26.4 or later. These commands build AND and Konu Aç, the plugin that lets you start topics:',
+      derle: 'You need Go 1.26.4 or later. These commands build AND and its Forum plugin, which draws the forum:',
       derleSon: `On Windows, add .exe to the output names and run and.exe. The ${a(`${DEPO}#building-from-source`, 'README')} covers every plugin and build option.`,
     },
     guvenlik: {
@@ -155,8 +157,8 @@ const M = {
         ['What’s public', 'Topics, replies, chat, profiles and personal sites are public: they spread to other nodes and are stored there. AND is pseudonymous, not anonymous; the nodes you connect to can see your IP address.'],
         ['Private messages', 'They travel over a direct, encrypted connection, and your message history is stored encrypted on your computer.'],
         ['Updates', 'Before replacing anything, an official release checks the release’s SHA-256 checksums and their Ed25519 signature. Builds you make from source never update themselves.'],
-        ['Plugins', 'Each plugin runs as a separate program with its own API key and only the permissions you approved.'],
-        ['Your terminal', 'Text from the network is cleaned of escape sequences and control characters before it’s drawn.'],
+        ['Plugins', 'Each plugin runs as a separate program with its own API key and only the permissions you approved. AND checks the screens a plugin sends before drawing them.'],
+        ['The interface', 'The desktop interface is served only on 127.0.0.1, to a window that opens with a one-time code, under a strict Content Security Policy; content from the network is never treated as HTML. In the terminal, text from the network is cleaned of escape sequences and control characters before it’s drawn.'],
         ['Telemetry', 'None. AND doesn’t collect or send usage data or crash reports.'],
       ],
       anahtar: 'Release signing key (Ed25519):',
@@ -166,8 +168,8 @@ const M = {
       id: 'projects', baslik: 'Projects',
       giris: `AND is split into a few repositories in the ${a(ORG, 'AND-community')} organisation on GitHub.`,
       liste: [
-        ['AND', DEPO, 'the app, with the Admin Panel, Private Chat, Website and example plugins and the VS Code extension'],
-        ['konu_ac', `${ORG}/konu_ac`, 'the new-topic plugin; you need it to start topics'],
+        ['AND', DEPO, 'the app, with the Forum, Admin Panel, Private Chat, Website and example plugins and the VS Code extension'],
+        ['konu_ac', `${ORG}/konu_ac`, 'archived; the new-topic form is now part of the Forum plugin'],
         ['DeltaX', `${ORG}/DeltaX`, 'private groups with their own version control'],
         ['Pembis', `${ORG}/Pembis`, 'a pink theme'],
         ['and-arama-motoru', `${ORG}/and-arama-motoru`, 'AND Search Engine'],
@@ -180,11 +182,11 @@ const M = {
         ['Is AND anonymous?', 'No. AND is pseudonymous: you appear under a name and a key rather than your real identity, but the nodes you connect to can see your IP address. AND doesn’t hide it for you.'],
         ['Do I need a server, a domain or an account?', 'No. Install AND, pick a name and a password, and you’re on the network. Every node is both a client and a server.'],
         ['How long do posts stay?', 'Topics delete themselves 5 days after they’re posted, chat messages after 48 hours. Content that has already spread can’t be guaranteed to disappear from every node.'],
-        ['I forgot my password.', 'Press ctrl+r on the login screen and type your recovery code. AND restores your identity and asks for a new password.'],
-        ['I lost my recovery code.', 'If you still know your password, open Settings, go to the Info tab and press m to show the code. If you’ve lost both, nobody can restore your identity: it never leaves your computer.'],
-        ['Which systems does it run on?', 'Windows, Linux and macOS, in any terminal. Releases are built for x86-64 on all three, and for ARM64 on Linux and macOS.'],
+        ['I forgot my password.', 'On the login screen click “Restore your identity” (ctrl+r in the terminal interface) and type your recovery code. AND restores your identity and asks for a new password.'],
+        ['I lost my recovery code.', 'If you still know your password, open the terminal interface (and --terminal), go to Settings, then the Info tab, and press m to show the code. If you’ve lost both, nobody can restore your identity: it never leaves your computer.'],
+        ['Which systems does it run on?', 'Windows, Linux and macOS. On Windows AND opens in its own window through WebView2, which comes with Windows 10 and 11; on Linux and macOS the same interface opens in your default browser, and the terminal interface works in any terminal. Releases are built for x86-64 on all three, and for ARM64 on Linux and macOS.'],
         ['Is it free?', 'Yes. AND is free software under the GNU AGPL-3.0: you can use, study, change and share it. If you run a modified version for others over a network, you have to offer them its source code.'],
-        ['Can I write my own plugin?', `Yes. A plugin is a separate program that talks to AND over a local HTTP API, with its own key. Start from the ${a(`${DEPO}/tree/main/Eklentiler/ornek`, 'example plugin and its guide')} (in Turkish).`],
+        ['Can I write my own plugin?', `Yes. A plugin is a separate program that talks to AND over a local HTTP API with its own key, and can show its screens with AND’s own components. and plugin new creates a working project; the ${a(`${DOSYA}/PLUGINS.md`, 'plugin guide')} explains the rest.`],
         ['Who moderates?', 'The founder, whose key is built into AND, and the moderators the founder appoints with signed certificates, which can be revoked at any time. They can delete topics early and ban peers; every node checks each decision’s signature.'],
       ],
     },
@@ -202,13 +204,13 @@ const M = {
   tr: {
     dil: 'tr', yerel: 'tr_TR', yol: '/tr/', diger: { dil: 'en', yol: '/', ad: 'English' },
     baslik: 'AND: ortada sunucu olmayan bir forum',
-    aciklama: 'AND, terminalde çalışan ücretsiz ve açık kaynaklı bir forum, sohbet ve kişisel site ağıdır. Eşten eşe çalışır: hesap yok, merkezi sunucu yok.',
+    aciklama: 'AND, masaüstü uygulaması ve terminal arayüzü olan ücretsiz ve açık kaynaklı bir forum, sohbet ve kişisel site ağıdır. Eşten eşe çalışır: hesap yok, merkezi sunucu yok.',
     ogResim: '/assets/img/og-tr.png',
     ogAlt: 'AND amblemi ve “Ortada sunucu olmayan bir forum.” cümlesi.',
     atla: 'İçeriğe geç', ana: 'AND ana sayfa', navEtiket: 'Ana menü', altNavEtiket: 'Alt bilgi',
     nav: [['neler-var', 'Neler var'], ['nasil-calisir', 'Nasıl çalışır'], ['kurulum', 'Kurulum'], ['guvenlik', 'Güvenlik'], ['sorular', 'Sorular']],
     h1: 'Ortada sunucu olmayan bir forum.',
-    ozet: 'AND terminalinde çalışır. Konular, sohbet ve özel mesajlar onu kullananlar arasında doğrudan dolaşır; her biri yalnızca yazarının elindeki bir anahtarla imzalanır. Hesap yok, merkezi sunucu yok.',
+    ozet: 'AND bilgisayarında kendi penceresinde ya da terminalde açılır. Konular, sohbet ve özel mesajlar onu kullananlar arasında doğrudan dolaşır; her biri yalnızca yazarının elindeki bir anahtarla imzalanır. Hesap yok, merkezi sunucu yok.',
     cta1: 'AND’ı kur', cta2: 'GitHub’da kaynak kodu',
     ekranBaslik: 'AND’ın masaüstü penceresi',
     ekranNot: 'Bu, AND’ın masaüstü penceresi; uygulamanın kendi renkleri ve metinleriyle HTML olarak çizildi. Kenar çubuğundan bir ekran seç, bir konu aç ya da bir tema dene. AND’ın tam ekran bir terminal arayüzü de var: <code>and --terminal</code>.',
@@ -217,16 +219,18 @@ const M = {
       id: 'neler-var', baslik: 'Neler var',
       giris: 'Buradaki her şey senin bilgisayarında ve konuştuğun kişilerin bilgisayarlarında çalışır.',
       liste: [
+        ['Masaüstü ve terminal', 'AND kendi penceresinde açılır: kenar çubuğu, hızlı erişim paleti (Ctrl+K) ve eklentileri içinde. Tam ekran bir terminal arayüzü de vardır; ikisi aynı kimliği ve verileri kullanır.'],
         ['Forum', '34 kategori. Bir konu yazıldığı anda eşlere ulaşır ve 5 gün sonra kendiliğinden silinir.'],
         ['Sohbet', 'Herkese açık tek bir kanal. Mesajlar imzalıdır, şifreli değildir ve 48 saat tutulur.'],
         ['Özel mesajlar', 'Şifreli bir bağlantıyla doğrudan karşındakine gider. Karşındaki çevrimdışıysa AND mesajı saklar ve 7 güne kadar, bağlandığında iletir.'],
         ['Dosyalar', 'Bir eşe dosya gönder. Alıcı onaylamadan hiçbir şey gelmez; yarıda kalan aktarım kaldığı yerden sürer.'],
         ['Kişisel site', 'Kendine ait en çok 20 sayfa yayınla. Sayfalar forum gibi imzalanır ve senkronlanır; yaptığın düzenlemeler herkese ulaşır.'],
         ['Moderasyon', 'Kurucu moderatör sertifikalarını imzalar. Moderatörler bir konuyu erken silebilir, bir eşi bir saatliğine ya da kalıcı olarak banlayabilir; her karar imzalanır ve kaydedilir.'],
-        ['Eklentiler', 'AND’ı genişleten ayrı programlar. Her biri ihtiyaç duyduğu izinleri ilk açtığında sorar.'],
-        ['Temalar ve diller', 'Altı yerleşik tema; arayüz Türkçe, İngilizce, Almanca, İspanyolca, Fransızca ve Rusça.'],
+        ['Eklentiler', 'AND’ı genişleten, kategorilere ayrılmış ayrı programlar. Masaüstü uygulamasında AND’ın penceresinin içinde çalışırlar; AND’la gelenler AND’ın kendi bileşenleriyle çizilir. Her biri ihtiyaç duyduğu izinleri ilk açtığında sorar; yenilerini bir klasörden, arşivden ya da https adresinden and eklenti kur ile eklersin.'],
+        ['Temalar ve diller', 'On yerleşik tema ve özel vurgu rengi; arayüz Türkçe, İngilizce, Almanca, İspanyolca, Fransızca ve Rusça.'],
         ['Güncellemeler', 'Resmi sürümler kendini ve eklentilerini günceller; bunu yalnızca sürümün imzası doğrulandıktan sonra yapar.'],
         ['Arama', `${a(`${ORG}/and-arama-motoru`, 'AND Arama Motoru')} ağa salt-okunur bir eş olarak katılır; forum, sohbet ve site içeriğini terminalden aranabilir kılar.`],
+        ['VS Code', 'AND’ın VS Code uzantısı forumu, sohbeti, özel mesajları ve DeltaX’i düzenleyiciye getirir; Forum sekmesi canlı güncellenir. Bağlantıyı AND’da Ayarlar › Eklentiler’den açarsın.'],
       ],
     },
     nasil: {
@@ -240,14 +244,14 @@ const M = {
       ],
       cizimEtiket: 'Diyagram: Konuyu düğüm A’ya ve düğüm B’ye gönderiyorsun; düğüm A onu düğüm C’ye iletiyor; çevrimdışı olan düğüm D konuyu sonra düğüm B’den senkronluyor.',
       cizimAlt: 'Bu çizimde sunucu yok: her kutu AND çalıştıran bir bilgisayar.',
-      son: 'Düğümler birbirini internette herkese açık libp2p DHT’si, yerel ağda mDNS ile bulur. Bağlantılar Noise protokolüyle şifrelidir. NAT arkasındaysan şifreli trafiği bir röle taşıyabilir ama okuyamaz.',
+      son: 'Düğümler birbirini internette herkese açık libp2p DHT’si, yerel ağda mDNS ile bulur. AND tanıştığı düğümleri hatırlar ve onlardan başkalarını öğrenir. Bağlantılar şifrelidir (TLS 1.3 ya da Noise). NAT arkasındaysan AND önce doğrudan bağlanmayı dener; olmazsa şifreli trafiği bir röle taşır ama okuyamaz.',
     },
     kurulum: {
       id: 'kurulum', baslik: 'Kurulum',
-      giris: 'AND, Windows, Linux ve macOS’ta bir terminalde çalışır.',
+      giris: 'AND, Windows, Linux ve macOS’ta çalışır. Windows’ta kendi penceresinde açılır; Linux ve macOS’ta aynı arayüz tarayıcında açılır. Herhangi bir terminalde and --terminal terminal arayüzünü açar.',
       yedek: `Her sürümde her platform için açılıp çalıştırılmaya hazır bir arşiv vardır: ${a(`${DEPO}/releases`, 'Sürümler sayfası')}.`,
       derleBaslik: 'Kaynaktan derle',
-      derle: 'Go 1.26.4 ya da üzeri gerekir. Bu komutlar AND’ı ve konu açmanı sağlayan Konu Aç eklentisini derler:',
+      derle: 'Go 1.26.4 ya da üzeri gerekir. Bu komutlar AND’ı ve forumu çizen Forum eklentisini derler:',
       derleSon: `Windows’ta derlenen dosya adlarına .exe ekle ve and.exe’yi çalıştır. Bütün eklentiler ve derleme seçenekleri ${a(`${DOSYA}/README.tr.md#kaynaktan-derleme`, 'README’de')}.`,
     },
     guvenlik: {
@@ -259,8 +263,8 @@ const M = {
         ['Herkese açık olan', 'Konular, yanıtlar, sohbet, profiller ve kişisel siteler herkese açıktır: diğer düğümlere yayılır ve orada saklanır. AND anonim değil, takma adlıdır; bağlandığın düğümler IP adresini görebilir.'],
         ['Özel mesajlar', 'Doğrudan, şifreli bir bağlantıyla gider; mesaj geçmişin bilgisayarında şifreli saklanır.'],
         ['Güncellemeler', 'Resmi bir sürüm, hiçbir şeyi değiştirmeden önce sürümün SHA-256 özetlerini ve onların Ed25519 imzasını denetler. Kaynaktan derlediğin sürümler kendini hiç güncellemez.'],
-        ['Eklentiler', 'Her eklenti kendi API anahtarıyla, yalnızca senin onayladığın izinlerle ayrı bir program olarak çalışır.'],
-        ['Terminalin', 'Ağdan gelen metin, ekrana basılmadan önce kaçış dizilerinden ve kontrol karakterlerinden temizlenir.'],
+        ['Eklentiler', 'Her eklenti kendi API anahtarıyla, yalnızca senin onayladığın izinlerle ayrı bir program olarak çalışır. AND, bir eklentinin gönderdiği ekranları çizmeden önce denetler.'],
+        ['Arayüz', 'Masaüstü arayüzü yalnızca 127.0.0.1’de, tek kullanımlık bir kodla açılan pencereye ve sıkı bir içerik güvenliği politikasıyla sunulur; ağdan gelen içerik hiçbir zaman HTML sayılmaz. Terminalde, ağdan gelen metin ekrana basılmadan önce kaçış dizilerinden ve kontrol karakterlerinden temizlenir.'],
         ['Telemetri', 'Yok. AND kullanım verisi ya da hata raporu toplamaz, göndermez.'],
       ],
       anahtar: 'Sürüm imzalama anahtarı (Ed25519):',
@@ -270,8 +274,8 @@ const M = {
       id: 'projeler', baslik: 'Projeler',
       giris: `AND, GitHub’daki ${a(ORG, 'AND-community')} organizasyonunda birkaç depoya ayrılmıştır.`,
       liste: [
-        ['AND', DEPO, 'uygulamanın kendisi; Yönetici Paneli, Özel Chat, Site ve örnek eklentiler ile VS Code uzantısı'],
-        ['konu_ac', `${ORG}/konu_ac`, 'konu açma eklentisi; konu açmak için gerekir'],
+        ['AND', DEPO, 'uygulamanın kendisi; Forum, Yönetici Paneli, Özel Chat, Site ve örnek eklentiler ile VS Code uzantısı'],
+        ['konu_ac', `${ORG}/konu_ac`, 'arşivlendi; konu açma formu artık Forum eklentisinin parçası'],
         ['DeltaX', `${ORG}/DeltaX`, 'kendi sürüm kontrol sistemiyle özel gruplar'],
         ['Pembis', `${ORG}/Pembis`, 'pembe bir tema'],
         ['and-arama-motoru', `${ORG}/and-arama-motoru`, 'AND Arama Motoru'],
@@ -284,11 +288,11 @@ const M = {
         ['AND anonim mi?', 'Hayır. AND takma adlıdır: gerçek kimliğinle değil bir ad ve bir anahtarla görünürsün, ama bağlandığın düğümler IP adresini görebilir. AND bunu senin için gizlemez.'],
         ['Sunucu, alan adı ya da hesap gerekiyor mu?', 'Hayır. AND’ı kur, bir ad ve parola seç; ağdasın. Her düğüm hem istemci hem sunucudur.'],
         ['Yazılanlar ne kadar kalır?', 'Konular yazıldıktan 5 gün, sohbet mesajları 48 saat sonra kendiliğinden silinir. Yayılmış bir içeriğin her düğümden silineceği garanti edilemez.'],
-        ['Parolamı unuttum.', 'Giriş ekranında ctrl+r’ye bas ve kurtarma kodunu yaz. AND kimliğini geri getirir ve yeni bir parola ister.'],
-        ['Kurtarma kodumu kaybettim.', 'Parolanı hâlâ biliyorsan Ayarlar’ı aç, Bilgi sekmesine gel ve kodu göstermek için m’ye bas. İkisini de kaybettiysen kimliğini kimse geri getiremez: bilgisayarından hiç çıkmaz.'],
-        ['Hangi sistemlerde çalışır?', 'Windows, Linux ve macOS’ta, herhangi bir terminalde. Sürümler üçü için x86-64, Linux ve macOS için ayrıca ARM64 olarak derlenir.'],
+        ['Parolamı unuttum.', 'Giriş ekranında “Kimliğini geri yükle”ye tıkla (terminal arayüzünde ctrl+r) ve kurtarma kodunu yaz. AND kimliğini geri getirir ve yeni bir parola ister.'],
+        ['Kurtarma kodumu kaybettim.', 'Parolanı hâlâ biliyorsan terminal arayüzünü aç (and --terminal), Ayarlar’da Bilgi sekmesine gel ve kodu göstermek için m’ye bas. İkisini de kaybettiysen kimliğini kimse geri getiremez: bilgisayarından hiç çıkmaz.'],
+        ['Hangi sistemlerde çalışır?', 'Windows, Linux ve macOS. Windows’ta AND, Windows 10 ve 11 ile gelen WebView2 sayesinde kendi penceresinde açılır; Linux ve macOS’ta aynı arayüz varsayılan tarayıcında açılır, terminal arayüzü de her terminalde çalışır. Sürümler üçü için x86-64, Linux ve macOS için ayrıca ARM64 olarak derlenir.'],
         ['Ücretsiz mi?', 'Evet. AND, GNU AGPL-3.0 ile lisanslı özgür bir yazılımdır: kullanabilir, inceleyebilir, değiştirebilir ve paylaşabilirsin. Değiştirdiğin bir sürümü ağ üzerinden başkalarına sunarsan kaynak kodunu da onlara sunman gerekir.'],
-        ['Kendi eklentimi yazabilir miyim?', `Evet. Eklenti, AND’la yerel bir HTTP API üzerinden kendi anahtarıyla konuşan ayrı bir programdır. ${a(`${DEPO}/tree/main/Eklentiler/ornek`, 'Örnek eklentiden ve rehberinden')} başla.`],
+        ['Kendi eklentimi yazabilir miyim?', `Evet. Eklenti, AND’la yerel bir HTTP API üzerinden kendi anahtarıyla konuşan ve ekranlarını AND’ın kendi bileşenleriyle gösterebilen ayrı bir programdır. and eklenti yeni çalışan bir proje oluşturur; gerisini ${a(`${DOSYA}/EKLENTILER.md`, 'eklenti rehberi')} anlatır.`],
         ['Moderasyonu kim yapar?', 'Anahtarı AND’ın içine gömülü olan kurucu ve kurucunun imzalı sertifikalarla atadığı moderatörler; sertifikalar her an iptal edilebilir. Konuları erken silebilir ve eşleri banlayabilirler; her düğüm her kararın imzasını denetler.'],
       ],
     },
@@ -310,8 +314,7 @@ const M = {
 const KOD = `git clone ${DEPO}.git
 cd AND
 go build -o and ./cmd/and
-git clone ${ORG}/konu_ac.git Eklentiler/konu_ac
-go build -o Eklentiler/konu_ac/and-plugin-konu_ac ./Eklentiler/konu_ac
+go build -o Eklentiler/forum/and-plugin-forum ./Eklentiler/forum
 ./and`;
 
 function bas(m) {
@@ -522,7 +525,7 @@ html, body { width: 1200px; height: 630px; margin: 0; overflow: hidden; backgrou
 <div class="og-marka"><img src="/assets/img/logo.png" alt=""><pre class="t-amblem" aria-hidden="true">${amblem()}</pre></div>
 <span class="adres">and-community.github.io</span>
 <h1 data-tr="${e(M.tr.h1)}">${e(M.en.h1)}</h1>
-<p data-tr="Terminalde eşten eşe forum, sohbet ve kişisel siteler. Ücretsiz ve açık kaynak.">Peer-to-peer forum, chat and personal sites in your terminal. Free and open source.</p>
+<p data-tr="Masaüstünde ya da terminalde eşten eşe forum, sohbet ve kişisel siteler. Ücretsiz ve açık kaynak.">Peer-to-peer forum, chat and personal sites, on your desktop or in your terminal. Free and open source.</p>
 </div>
 <script>if (new URLSearchParams(location.search).get('dil') === 'tr') { document.documentElement.lang = 'tr'; document.querySelectorAll('[data-tr]').forEach((d) => { d.textContent = d.dataset.tr; }); }</script>
 </body>

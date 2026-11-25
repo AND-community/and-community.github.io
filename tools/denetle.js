@@ -187,6 +187,52 @@ denetim('id-tekil', () => {
   }
 });
 
+// ─── Sayfa metinleri ────────────────────────────────────────────────────────
+
+const og = oku('tools/og.html');
+
+denetim('metin-terminal', () => {
+  // AND artık varsayılan olarak kendi penceresinde açılır; "terminalde çalışır"
+  // demek yanlış olur (terminal arayüzü ancak seçenek olarak anılır).
+  const yasak = [/runs in (a|your) terminal/i, /(?<!desktop or )in your terminal\./i, /terminalinde çalışır/i, /bir terminalde çalışır/i, /Terminalde eşten eşe/];
+  for (const [ad, metin] of [['en', sayfalar.en], ['tr', sayfalar.tr], ['og.html', og]]) {
+    const bulunan = yasak.filter((re) => re.test(metin)).map(String);
+    bekle(!bulunan.length, `${ad}: ${bulunan.join(', ')}`);
+  }
+});
+
+denetim('metin-konu-ac', () => {
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const kod = /<code id="derleme-komutlari">([\s\S]*?)<\/code>/.exec(html);
+    bekle(kod, `${dil}: derleme komutları yok`);
+    bekle(!kod[1].includes('konu_ac'), `${dil}: derleme komutlarında konu_ac var`);
+    bekle(kod[1].includes('Eklentiler/forum/and-plugin-forum'), `${dil}: forum eklentisi derlenmiyor`);
+  }
+});
+
+denetim('metin-surumler', () => {
+  // Eski eklenti sürümleri (2026-11-01'deki kopya) kalmamalı.
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const eski = ['1.7.1', '2.1.1', '1.3.1'].filter((s) => html.includes(s));
+    bekle(!eski.length, `${dil}: eski sürüm numaraları: ${eski.join(', ')}`);
+  }
+});
+
+denetim('metin-esitlik', () => {
+  const say = (html, re) => (html.match(re) || []).length;
+  for (const [ad, re] of [['.kv dt', /<dl class="kv">[\s\S]*?<\/dl>/g], ['dt', /<dt>/g], ['details', /<details>/g], ['.agac li', /<li><span class="dal"/g]]) {
+    bekle(say(sayfalar.en, re) === say(sayfalar.tr, re), `${ad}: EN ${say(sayfalar.en, re)}, TR ${say(sayfalar.tr, re)}`);
+  }
+  // Bölüm kimlikleri dile göredir (features / neler-var); sayıları aynı olmalı.
+  const bolumler = (html) => [...html.matchAll(/<section class="bolum" id="([^"]+)"/g)].map((m) => m[1]);
+  bekle(bolumler(sayfalar.en).length === bolumler(sayfalar.tr).length, `bölüm sayısı: EN ${bolumler(sayfalar.en).length}, TR ${bolumler(sayfalar.tr).length}`);
+});
+
+denetim('metin-guncelleme', () => {
+  const tarih = [...oku('sitemap.xml').matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
+  bekle(tarih.length === 2 && tarih.every((t) => t >= '2026-11-25'), `sitemap lastmod: ${tarih.join(', ')}`);
+});
+
 if (basarisiz) {
   console.log(`\n${basarisiz} denetim başarısız.`);
   process.exit(1);
