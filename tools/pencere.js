@@ -301,7 +301,7 @@ function pencere(dil, { e, SURUM, DEPO, TEMALAR }) {
   const calisan = `<i class="p-nokta iyi" title="${e(r.calisiyor)}"></i><span class="gorsel-gizli">, ${e(r.calisiyor)}</span>`;
   const f = r.forum;
   const kategoriSayisi = (kat) => f.konular.filter((k) => k.kat === kat).length;
-  const kategoriler = `<div class="p-alt-gezinme" role="group" aria-label="${e(r.kategoriEtiket)}">${f.kategoriler.map(([id, isim]) => `<button type="button" class="p-kat" data-kategori="${id}"><span>${e(isim)}</span><span class="p-sayi">${kategoriSayisi(id)}</span></button>`).join('')}</div>`;
+  const kategoriler = `<div class="p-alt-gezinme" role="group" aria-label="${e(r.kategoriEtiket)}">${f.kategoriler.map(([id, isim]) => `<button type="button" class="p-kat" data-kategori="${id}" aria-pressed="false"><span>${e(isim)}</span><span class="p-sayi">${kategoriSayisi(id)}</span></button>`).join('')}</div>`;
   const grup = (g) => `<p class="p-grup">${e(r.gruplar[g])}</p>`;
   const kenar = `<nav class="p-kenar" aria-label="${e(r.kenarEtiket)}">
 <div class="p-marka"><img src="/assets/img/logo.png" width="26" height="26" alt=""><span>AND</span></div>

@@ -1,5 +1,5 @@
-// AND web sitesi: tema seçimi, ana ekran kopyasının menüsü, açılıştaki eş
-// bağlantısı animasyonu, son sürümün GitHub'dan bulunması ve kopyalama
+// AND web sitesi: tema seçimi, masaüstü penceresi kopyasının davranışı,
+// açılıştaki eş bağlantısı animasyonu, son sürümün GitHub'dan bulunması ve kopyalama
 // düğmeleri. Dışarıdan yüklenen tek şey GitHub API'sine giden sürüm sorgusudur.
 (() => {
   'use strict';
@@ -13,11 +13,7 @@
       temaAdi: { klasik: 'Classic', turkuaz: 'Turquoise', 'gece-moru': 'Night Purple', kehribar: 'Amber', orman: 'Forest', gul: 'Rose', okyanus: 'Ocean', 'gun-batimi': 'Sunset', lavanta: 'Lavender', mono: 'Mono' },
       es: (n) => `${n} ${n === 1 ? 'peer' : 'peers'} connected`,
       dugum: (n) => `${n} AND ${n === 1 ? 'node' : 'nodes'}`,
-      baglaniyor: '◌ connecting to the network…',
-      bekleniyor: 'waiting',
-      simdi: 'just now',
-      acikSayi: (a, t) => `${a} / ${t} enabled`,
-      yukluSayi: (y, a) => `${y} installed, ${a} enabled`,
+      baglaniyor: 'connecting to the network…',
       kopyala: 'Copy',
       kopyalandi: 'Copied',
       denetleniyor: 'Checking GitHub for the latest release…',
@@ -37,11 +33,7 @@
       temaAdi: { klasik: 'Klasik', turkuaz: 'Turkuaz', 'gece-moru': 'Gece Moru', kehribar: 'Kehribar', orman: 'Orman', gul: 'Gül', okyanus: 'Okyanus', 'gun-batimi': 'Gün Batımı', lavanta: 'Lavanta', mono: 'Mono' },
       es: (n) => `${n} eş bağlı`,
       dugum: (n) => `${n} AND düğümü`,
-      baglaniyor: '◌ ağa bağlanıyor…',
-      bekleniyor: 'bekleniyor',
-      simdi: 'şimdi',
-      acikSayi: (a, t) => `${a} / ${t} açık`,
-      yukluSayi: (y, a) => `${y} yüklü, ${a} açık`,
+      baglaniyor: 'ağa bağlanıyor…',
       kopyala: 'Kopyala',
       kopyalandi: 'Kopyalandı',
       denetleniyor: 'GitHub’da son sürüme bakılıyor…',
@@ -101,87 +93,100 @@
   });
   temaUygula(kok.dataset.tema, false);
 
-  // ─── Ana ekran kopyası: menü ve eklentiler ─────────────────────────────────
+  // ─── Masaüstü penceresi kopyası ────────────────────────────────────────────
+  // Uygulamadaki gibi: kenar çubuğu ekranı değiştirir, Forum'un altındaki
+  // kategoriler konu listesini süzer, listeden bir konu açılır, Ayarlar'ın
+  // sekmeleri değişir. Dar pencerede forumda ya liste ya konu görünür; konuya
+  // girince geri düğmesi çıkar. Tema kartları belge düzeyindeki
+  // [data-tema-sec] dinleyicisine düşer. Bütün öğeler gerçek düğmedir; Enter
+  // ve Space onları tarayıcının kendisi tıklatır.
 
-  const agac = document.querySelector('.t-agac');
-  if (agac) {
-    const ogeler = Array.from(agac.querySelectorAll('[role="option"]'));
-    const ipucuNormal = document.querySelector('[data-ipucu-normal]');
-    const ipucuEklenti = document.querySelector('[data-ipucu-eklenti]');
+  const pencere = document.querySelector('[data-pencere]');
+  if (pencere) {
+    const hepsi = (s) => Array.from(pencere.querySelectorAll(s));
+    const konular = hepsi('.p-konu');
+    const okumaAlani = pencere.querySelector('.p-forum .p-sag');
+    const geri = pencere.querySelector('[data-geri]');
+    const gorunur = (x) => !!x && x.getClientRects().length > 0;
+    let kategori = null;
 
-    const sec = (oge) => {
-      ogeler.forEach((o) => o.setAttribute('aria-selected', String(o === oge)));
-      agac.setAttribute('aria-activedescendant', oge.id);
-      document.querySelectorAll('[data-panel-icerik]').forEach((p) => { p.hidden = p.dataset.panelIcerik !== oge.dataset.panel; });
-      const eklentili = oge.hasAttribute('data-eklenti');
-      ipucuNormal.hidden = eklentili;
-      ipucuEklenti.hidden = !eklentili;
-    };
-
-    // Uygulamadaki gibi: space seçili eklentiyi kapatır ya da açar; kapalı
-    // eklenti menüde soluk ve "kapalı" yazar, sayılar güncellenir.
-    const eklentiDegistir = (oge) => {
-      const id = oge.dataset.eklenti;
-      const kapali = !oge.classList.contains('kapali');
-      oge.classList.toggle('kapali', kapali);
-      const panel = document.querySelector(`[data-panel-icerik="${id}"]`);
-      panel.querySelector('[data-durum-acik]').hidden = kapali;
-      panel.querySelector('[data-durum-kapali]').hidden = !kapali;
-      panel.querySelector('[data-ipucu-acik]').hidden = kapali;
-      panel.querySelector('[data-ipucu-kapali]').hidden = !kapali;
-      document.querySelectorAll(`[data-eklenti-nokta="${id}"]`).forEach((n) => {
-        n.textContent = kapali ? '○' : '●';
-        n.className = kapali ? 't-sil' : 't-ok';
-      });
-      const menudekiler = agac.querySelectorAll('[data-eklenti]').length;
-      const acik = agac.querySelectorAll('[data-eklenti]:not(.kapali)').length;
-      document.querySelectorAll('[data-acik-sayi]').forEach((d) => { d.textContent = M.acikSayi(acik, menudekiler); });
-      // Yüklü eklentiler: menüdeki üçü, tema eklentisi Pembiş ve menüde
-      // görünmeyen Konu Aç.
-      document.querySelectorAll('[data-yuklu-sayi]').forEach((d) => { d.textContent = M.yukluSayi(menudekiler + 2, acik + 2); });
-    };
-
-    agac.addEventListener('click', (olay) => {
-      const oge = olay.target.closest('[role="option"]');
-      if (oge) sec(oge);
+    const sec = (ogeler, oge, ozellik, deger) => ogeler.forEach((x) => {
+      if (x === oge) x.setAttribute(ozellik, deger);
+      else x.removeAttribute(ozellik);
     });
 
-    agac.addEventListener('keydown', (olay) => {
-      const i = ogeler.findIndex((o) => o.getAttribute('aria-selected') === 'true');
-      let j = null;
-      switch (olay.key) {
-        case 'ArrowDown': j = Math.min(i + 1, ogeler.length - 1); break;
-        case 'ArrowUp': j = Math.max(i - 1, 0); break;
-        case 'Home': j = 0; break;
-        case 'End': j = ogeler.length - 1; break;
-        case ' ':
-          olay.preventDefault();
-          if (ogeler[i].hasAttribute('data-eklenti')) eklentiDegistir(ogeler[i]);
-          return;
-        default: return;
+    const ekranAc = (id) => {
+      sec(hepsi('.p-nav'), hepsi('.p-nav').find((n) => n.dataset.ekran === id), 'aria-current', 'page');
+      hepsi('[data-ekran-icerik]').forEach((x) => { x.hidden = x.dataset.ekranIcerik !== id; });
+      pencere.removeAttribute('data-okuma');
+    };
+
+    const konuAc = (konu) => {
+      sec(konular, konu, 'aria-current', 'true');
+      hepsi('[data-konu-icerik]').forEach((x) => { x.hidden = x.dataset.konuIcerik !== konu.dataset.konu; });
+      if (okumaAlani) okumaAlani.scrollTop = 0;
+    };
+
+    // suz, konu listesini bir kategoriye indirir (kat boşsa hepsi); açık konu
+    // süzgecin dışında kalırsa listedeki ilk konu açılır.
+    const suz = (kat) => {
+      kategori = kat;
+      hepsi('.p-kat').forEach((k) => k.setAttribute('aria-pressed', String(k.dataset.kategori === kat)));
+      konular.forEach((k) => { k.hidden = !!kat && k.dataset.kategori !== kat; });
+      const acik = konular.find((k) => k.getAttribute('aria-current') === 'true');
+      if (!acik || acik.hidden) {
+        const ilk = konular.find((k) => !k.hidden);
+        if (ilk) konuAc(ilk);
       }
-      olay.preventDefault();
-      sec(ogeler[j]);
+    };
+
+    pencere.addEventListener('click', (olay) => {
+      const nav = olay.target.closest('.p-nav');
+      if (nav) {
+        ekranAc(nav.dataset.ekran);
+        if (nav.dataset.ekran === 'forum') suz(null);
+        return;
+      }
+      const kat = olay.target.closest('.p-kat');
+      if (kat) {
+        ekranAc('forum');
+        suz(kategori === kat.dataset.kategori ? null : kat.dataset.kategori);
+        return;
+      }
+      const konu = olay.target.closest('.p-konu');
+      if (konu) {
+        konuAc(konu);
+        pencere.setAttribute('data-okuma', '');
+        // Dar pencerede liste gizlenir; odak geri düğmesine geçer.
+        if (gorunur(geri)) geri.focus();
+        return;
+      }
+      if (olay.target.closest('[data-geri]')) {
+        pencere.removeAttribute('data-okuma');
+        const acik = konular.find((k) => k.getAttribute('aria-current') === 'true');
+        if (acik) acik.focus();
+        return;
+      }
+      const sekme = olay.target.closest('.p-sekme');
+      if (sekme) {
+        sec(hepsi('.p-sekme'), sekme, 'aria-current', 'true');
+        hepsi('[data-sekme-icerik]').forEach((x) => { x.hidden = x.dataset.sekmeIcerik !== sekme.dataset.sekme; });
+      }
     });
   }
 
   // ─── Açılış: eşler bağlanır ───────────────────────────────────────────────
-  // Uygulama açıldığında ana ekranda önce "ağa bağlanıyor…" yazar, sonra
-  // bağlanan eşlerin ve AND düğümlerinin sayısı artar; ilk AND düğümüyle
-  // senkron yapılınca "Son senkron" güncellenir.
+  // Uygulama açıldığında durum çubuğunda önce "ağa bağlanıyor…" yazar, sonra
+  // bağlanan eşlerin ve AND düğümlerinin sayısı artar. Hareket azaltma
+  // tercihinde durum çubuğu son hâliyle (HTML'deki gibi) kalır.
 
   const durumYerleri = document.querySelectorAll('[data-es]');
   if (durumYerleri.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const senkron = document.querySelectorAll('[data-senkron]');
     const yaz = (html) => durumYerleri.forEach((y) => { y.innerHTML = html; });
-    const durum = (es, dugum) => `<span class="t-ok">●</span> ${M.es(es)}<span class="t-sil">  ·  </span><span class="t-soluk">${M.dugum(dugum)}</span>`;
-    yaz(`<span class="t-uyari">${M.baglaniyor}</span>`);
-    senkron.forEach((s) => { s.textContent = M.bekleniyor; });
+    const durum = (es, dugum) => `<i class="p-nokta iyi"></i>${M.es(es)}<span class="p-ayrac" aria-hidden="true"></span><span class="p-soluk">${M.dugum(dugum)}</span>`;
+    yaz(`<i class="p-nokta uyari"></i><span class="p-uyari">${M.baglaniyor}</span>`);
     [[1, 0], [4, 1], [9, 2], [15, 3], [23, 4]].forEach(([es, dugum], i) => {
-      setTimeout(() => {
-        yaz(durum(es, dugum));
-        if (dugum > 0) senkron.forEach((s) => { s.textContent = M.simdi; });
-      }, 900 + i * 320);
+      setTimeout(() => yaz(durum(es, dugum)), 900 + i * 320);
     });
   }
 
