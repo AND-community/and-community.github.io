@@ -66,6 +66,27 @@
   --ink: #0a0f0f; --ink-deep: #040606; --accent-ink: #afe4ae; --soft: #a4a4ac; --line: #3c3d3d;
 }
 
+/* Gül, Okyanus, Gün Batımı, Lavanta: türetilmiş tonlar tools/tema-tonlari.js'ten. */
+:root[data-tema="gul"] {
+  --accent: #ff87af; --sel: #af005f; --name: #ffd7af; --badge: #87d7ff;
+  --ink: #180a15; --ink-deep: #0b0409; --accent-ink: #ffafc6; --soft: #aaa2ae; --line: #403c3f;
+}
+
+:root[data-tema="okyanus"] {
+  --accent: #00afff; --sel: #005f87; --name: #87ffd7; --badge: #ffaf5f;
+  --ink: #0a0f19; --ink-deep: #04060c; --accent-ink: #7acafe; --soft: #a4a4b0; --line: #3c3d40;
+}
+
+:root[data-tema="gun-batimi"] {
+  --accent: #ff875f; --sel: #af0000; --name: #ffd787; --badge: #af87ff;
+  --ink: #180b0f; --ink-deep: #0b0406; --accent-ink: #ffaf93; --soft: #aaa3ac; --line: #403c3d;
+}
+
+:root[data-tema="lavanta"] {
+  --accent: #d7afff; --sel: #5f5faf; --name: #afd7d7; --badge: #ffafd7;
+  --ink: #0f0f1c; --ink-deep: #06060e; --accent-ink: #e3c8fd; --soft: #a6a4b1; --line: #3d3d41;
+}
+
 :root[data-tema="mono"] {
   --accent: #eeeeee; --sel: #585858; --name: #d0d0d0; --badge: #bcbcbc; --muted: #949494; --text: #e8e8e8;
   --ink: #0f0e14; --ink-deep: #060509; --accent-ink: #f3f3f3; --soft: #a4a3a6; --line: #3d3d3f;

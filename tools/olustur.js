@@ -35,6 +35,10 @@ const TEMALAR = [
   { id: 'gece-moru', tr: 'Gece Moru', en: 'Night Purple', renk: ['#875fff', '#5f00af', '#5fffd7', '#5fafff'] },
   { id: 'kehribar', tr: 'Kehribar', en: 'Amber', renk: ['#ffaf00', '#875f00', '#d7af87', '#87d7ff'] },
   { id: 'orman', tr: 'Orman', en: 'Forest', renk: ['#87d787', '#005f00', '#ffd7af', '#87d7ff'] },
+  { id: 'gul', tr: 'Gül', en: 'Rose', renk: ['#ff87af', '#af005f', '#ffd7af', '#87d7ff'] },
+  { id: 'okyanus', tr: 'Okyanus', en: 'Ocean', renk: ['#00afff', '#005f87', '#87ffd7', '#ffaf5f'] },
+  { id: 'gun-batimi', tr: 'Gün Batımı', en: 'Sunset', renk: ['#ff875f', '#af0000', '#ffd787', '#af87ff'] },
+  { id: 'lavanta', tr: 'Lavanta', en: 'Lavender', renk: ['#d7afff', '#5f5faf', '#afd7d7', '#ffafd7'] },
   { id: 'mono', tr: 'Mono', en: 'Mono', renk: ['#eeeeee', '#585858', '#d0d0d0', '#bcbcbc'] },
 ];
 
@@ -617,7 +621,7 @@ ${SIMGELER}
 <meta property="og:locale" content="${m.yerel}">
 <meta property="og:locale:alternate" content="${m.dil === 'en' ? 'tr_TR' : 'en_US'}">
 <meta name="twitter:card" content="summary_large_image">
-<script>try{var t=localStorage.getItem("and-tema");if(/^(klasik|turkuaz|gece-moru|kehribar|orman|mono)$/.test(t))document.documentElement.dataset.tema=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("and-tema");if(/^(klasik|turkuaz|gece-moru|kehribar|orman|gul|okyanus|gun-batimi|lavanta|mono)$/.test(t))document.documentElement.dataset.tema=t}catch(e){}</script>
 <script src="/assets/js/site.js" defer></script>
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
 </head>`;
@@ -717,7 +721,7 @@ function bulunamadi() {
 <meta name="theme-color" content="#0e0c24">
 ${SIMGELER}
 <link rel="stylesheet" href="/assets/css/site.css">
-<script>try{var t=localStorage.getItem("and-tema");if(/^(klasik|turkuaz|gece-moru|kehribar|orman|mono)$/.test(t))document.documentElement.dataset.tema=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem("and-tema");if(/^(klasik|turkuaz|gece-moru|kehribar|orman|gul|okyanus|gun-batimi|lavanta|mono)$/.test(t))document.documentElement.dataset.tema=t}catch(e){}</script>
 </head>
 <body>
 <header class="ust sayfa"><a class="marka" href="/" aria-label="AND home">${MARKA}</a></header>

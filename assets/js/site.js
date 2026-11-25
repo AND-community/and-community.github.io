@@ -10,7 +10,7 @@
 
   const M = {
     en: {
-      temaAdi: { klasik: 'Classic', turkuaz: 'Turquoise', 'gece-moru': 'Night Purple', kehribar: 'Amber', orman: 'Forest', mono: 'Mono' },
+      temaAdi: { klasik: 'Classic', turkuaz: 'Turquoise', 'gece-moru': 'Night Purple', kehribar: 'Amber', orman: 'Forest', gul: 'Rose', okyanus: 'Ocean', 'gun-batimi': 'Sunset', lavanta: 'Lavender', mono: 'Mono' },
       es: (n) => `${n} ${n === 1 ? 'peer' : 'peers'} connected`,
       dugum: (n) => `${n} AND ${n === 1 ? 'node' : 'nodes'}`,
       baglaniyor: '◌ connecting to the network…',
@@ -34,7 +34,7 @@
       ozetNot: ['Check your download against ', ', and that file against its signature, ', ', with the key in the Security section.'],
     },
     tr: {
-      temaAdi: { klasik: 'Klasik', turkuaz: 'Turkuaz', 'gece-moru': 'Gece Moru', kehribar: 'Kehribar', orman: 'Orman', mono: 'Mono' },
+      temaAdi: { klasik: 'Klasik', turkuaz: 'Turkuaz', 'gece-moru': 'Gece Moru', kehribar: 'Kehribar', orman: 'Orman', gul: 'Gül', okyanus: 'Okyanus', 'gun-batimi': 'Gün Batımı', lavanta: 'Lavanta', mono: 'Mono' },
       es: (n) => `${n} eş bağlı`,
       dugum: (n) => `${n} AND düğümü`,
       baglaniyor: '◌ ağa bağlanıyor…',
@@ -74,8 +74,8 @@
 
   // ─── Tema ────────────────────────────────────────────────────────────────
 
-  const TEMALAR = ['klasik', 'turkuaz', 'gece-moru', 'kehribar', 'orman', 'mono'];
-  const ZEMIN = { klasik: '#0e0c24', turkuaz: '#0a0f15', 'gece-moru': '#0f091c', kehribar: '#130f10', orman: '#0a0f0f', mono: '#0f0e14' };
+  const TEMALAR = ['klasik', 'turkuaz', 'gece-moru', 'kehribar', 'orman', 'gul', 'okyanus', 'gun-batimi', 'lavanta', 'mono'];
+  const ZEMIN = { klasik: '#0e0c24', turkuaz: '#0a0f15', 'gece-moru': '#0f091c', kehribar: '#130f10', orman: '#0a0f0f', gul: '#180a15', okyanus: '#0a0f19', 'gun-batimi': '#180b0f', lavanta: '#0f0f1c', mono: '#0f0e14' };
 
   function temaUygula(id, kaydet) {
     if (!TEMALAR.includes(id)) id = 'klasik';
