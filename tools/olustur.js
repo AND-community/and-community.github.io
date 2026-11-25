@@ -7,6 +7,7 @@
 // güncellenmeli. Kullanım: node tools/olustur.js
 const fs = require('fs');
 const path = require('path');
+const { pencere } = require('./pencere');
 
 const KOK = path.resolve(__dirname, '..');
 const SITE = 'https://and-community.github.io';
@@ -52,270 +53,9 @@ const LOGO = [
   '╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝',
 ];
 
-// ui.AuthorColor paletinden: kişi adları her yerde aynı renkte görünür.
-const KISI = { zeynep: '#87d7d7', mehmet: '#d7af87', deniz: '#d7afd7', 'ayşe': '#afd787' };
-
-// ─── Ana ekran kopyasının metinleri ─────────────────────────────────────────
-
-const R = {
-  en: {
-    temaAdi: (ad) => `<span data-tema-adi>${ad}</span> theme`,
-    es: (n) => `${n} ${n === 1 ? 'peer' : 'peers'} connected`,
-    dugum: (n) => `${n} AND ${n === 1 ? 'node' : 'nodes'}`,
-    baglaniyor: '◌ connecting to the network…',
-    sayilar: [['Forum', '142 topics'], ['Chat', '1,204 messages'], ['Plugins', '3 / 3 enabled', 'data-acik-sayi'], ['Last sync', 'just now', 'data-senkron']],
-    gruplar: { topluluk: 'Community', eklentiler: 'Plugins', sistem: 'System' },
-    ogeler: { forum: 'Forum', sohbet: 'Chat', deltax: 'DeltaX', ozel_chat: 'Private Chat', site: 'Website', ayarlar: 'Settings', hakkinda: 'About AND', cikis: 'Quit' },
-    kapali: '  off',
-    okunmamis: '2 unread messages',
-    menu: 'AND menu',
-    ipucu: { gezin: 'navigate', ac: 'open', eklenti: 'toggle plugin', cikis: 'quit' },
-    forum: {
-      sag: '34 categories',
-      aciklama: 'Topics sorted into categories. A topic spreads to peers as soon as it is published and deletes itself after 5 days.',
-      son: 'Recent topics',
-      konular: [
-        ['How do I connect from behind a NAT with libp2p?', 'Go', 'zeynep', '2h ago', '3 replies'],
-        ['Common mistakes with Ed25519 signatures', 'Cybersecurity', 'mehmet', '5h ago'],
-        ['Small language models that run on a laptop?', 'Artificial Intelligence', 'deniz', '9h ago', '7 replies'],
-      ],
-      yanBaslik: 'Categories',
-      yanAlt: 'Most topics',
-      sayilar: [['Go', 31], ['Python', 24], ['Cybersecurity', 18], ['Linux', 15], ['Artificial Intelligence', 12], ['Rust', 9], ['Web', 8], ['Databases', 5]],
-    },
-    sohbet: {
-      sag: 'public channel',
-      aciklama: 'Public channel open to everyone. Messages are signed but not encrypted; anyone on the network can read them.',
-      son: 'Recent messages',
-      mesajlar: [
-        ['21:04', 'zeynep', 'anyone tried the branch view in the new DeltaX?'],
-        ['21:05', 'mehmet', 'yes, the folded diffs make big files readable'],
-        ['21:07', 'deniz', 'is there a Rust category?'],
-        ['21:07', 'zeynep', 'there are 34 categories, Rust is one of them'],
-        ['21:09', 'umut', 'welcome, deniz'],
-        ['21:12', 'ayşe', 'switched the interface to English with ctrl+l, works great'],
-      ],
-      yanBaslik: 'Most active',
-      yanAlt: 'In the loaded chat history',
-      sayilar: [['zeynep', 48], ['mehmet', 35], ['umut', 27], ['deniz', 19], ['ayşe', 12]],
-    },
-    eklenti: {
-      acik: '● on', kapali: '○ disabled', surum: 'Version', yazar: 'Author', program: 'Program',
-      ipucuAcik: 'enter to open, space to disable. Disabled plugins appear dimmed in the menu.',
-      ipucuKapali: 'space to enable. While disabled it is not started and cannot access AND’s API.',
-      yanBaslik: 'Installed plugins',
-    },
-    eklentiler: {
-      deltax: ['DeltaX', '1.7.1', 'Private groups for developing projects with their own version control — end-to-end encrypted sync only between group members, outside the main network', '~/AND/Eklentiler/DeltaX/and-plugin-DeltaX'],
-      ozel_chat: ['Private Chat', '2.1.1', 'Message peers directly, send files and approve incoming file requests', '~/AND/Eklentiler/ozel_chat/and-plugin-ozel_chat'],
-      site: ['Website', '1.3.1', 'Create, edit and publish your own multi-page personal website', '~/AND/Eklentiler/site/and-plugin-site'],
-      pembis: ['Pembiş Theme', '1.2.0'],
-    },
-    ayarlar: {
-      aciklama: 'Your identity and profile, installed plugins and themes.',
-      kv: [['Theme', '<span data-tema-adi>Classic</span>'], ['Version', SURUM], ['Plugins', '<span data-yuklu-sayi>5 installed, 5 enabled</span>'], ['Data folder', '~/.config/and']],
-      ipucu: 'To change the theme, go to Settings → Themes.',
-      yanBaslik: 'Themes', yanAlt: 'Chosen in Settings → Themes', etkin: ' ● active',
-    },
-    hakkinda: {
-      aciklama: 'Version, copyright and license notice, privacy summary, community rules and the licenses of third-party components.',
-      kv: [['License', 'GNU AGPL-3.0'], ['Source code', DEPO], ['Components', '146 open source components']],
-      garanti: 'This program comes with ABSOLUTELY NO WARRANTY; you may modify and redistribute it under the terms of the GNU AGPL-3.0. Press enter for details.',
-    },
-    cikis: 'Closes AND. Topics, chat history and your identity stay on this computer; you reconnect to the network the next time you open it.',
-  },
-  tr: {
-    temaAdi: (ad) => `<span data-tema-adi>${ad}</span> teması`,
-    es: (n) => `${n} eş bağlı`,
-    dugum: (n) => `${n} AND düğümü`,
-    baglaniyor: '◌ ağa bağlanıyor…',
-    sayilar: [['Forum', '142 konu'], ['Sohbet', '1.204 mesaj'], ['Eklentiler', '3 / 3 açık', 'data-acik-sayi'], ['Son senkron', 'şimdi', 'data-senkron']],
-    gruplar: { topluluk: 'Topluluk', eklentiler: 'Eklentiler', sistem: 'Sistem' },
-    ogeler: { forum: 'Forum', sohbet: 'Sohbet', deltax: 'DeltaX', ozel_chat: 'Özel Chat', site: 'Site', ayarlar: 'Ayarlar', hakkinda: 'AND hakkında', cikis: 'Çıkış' },
-    kapali: '  kapalı',
-    okunmamis: '2 okunmamış mesaj',
-    menu: 'AND menüsü',
-    ipucu: { gezin: 'gezin', ac: 'aç', eklenti: 'eklentiyi aç/kapat', cikis: 'çıkış' },
-    forum: {
-      sag: '34 kategori',
-      aciklama: 'Kategorilere ayrılmış konular. Bir konu yayınlandığı anda eşlere yayılır ve 5 gün sonra kendiliğinden silinir.',
-      son: 'Son konular',
-      konular: [
-        ['libp2p ile NAT arkasından bağlantı nasıl kurulur?', 'Go', 'zeynep', '2 sa önce', '3 yanıt'],
-        ['Ed25519 imzalarında sık yapılan hatalar', 'Siber Güvenlik', 'mehmet', '5 sa önce'],
-        ['Dizüstünde çalışan küçük dil modelleri?', 'Yapay Zeka', 'deniz', '9 sa önce', '7 yanıt'],
-      ],
-      yanBaslik: 'Kategoriler',
-      yanAlt: 'En çok konusu olanlar',
-      sayilar: [['Go', 31], ['Python', 24], ['Siber Güvenlik', 18], ['Linux', 15], ['Yapay Zeka', 12], ['Rust', 9], ['Web', 8], ['Veritabanı', 5]],
-    },
-    sohbet: {
-      sag: 'genel kanal',
-      aciklama: 'Herkese açık genel kanal. Mesajlar imzalıdır ama şifreli değildir; ağdaki herkes okuyabilir.',
-      son: 'Son mesajlar',
-      mesajlar: [
-        ['21:04', 'zeynep', 'yeni DeltaX’teki dal görünümünü deneyen oldu mu?'],
-        ['21:05', 'mehmet', 'evet, katlanan farklar büyük dosyaları okunur yapıyor'],
-        ['21:07', 'deniz', 'Rust kategorisi var mı?'],
-        ['21:07', 'zeynep', '34 kategori var, Rust da içinde'],
-        ['21:09', 'umut', 'hoş geldin deniz'],
-        ['21:12', 'ayşe', 'ctrl+l ile arayüzü İngilizceye aldım, gayet iyi'],
-      ],
-      yanBaslik: 'En çok yazanlar',
-      yanAlt: 'Yüklü sohbet geçmişinde',
-      sayilar: [['zeynep', 48], ['mehmet', 35], ['umut', 27], ['deniz', 19], ['ayşe', 12]],
-    },
-    eklenti: {
-      acik: '● açık', kapali: '○ kapalı', surum: 'Sürüm', yazar: 'Yazar', program: 'Program',
-      ipucuAcik: 'enter ile aç, space ile kapat. Kapalı eklentiler menüde soluk görünür.',
-      ipucuKapali: 'space ile aç. Kapalıyken başlatılmaz ve AND’ın API’sine erişemez.',
-      yanBaslik: 'Yüklü eklentiler',
-    },
-    eklentiler: {
-      deltax: ['DeltaX', '1.7.1', 'Özel gruplar kurup kendi sürüm kontrol sistemiyle birlikte proje geliştirme — merkezi ağ dışında, yalnızca grup üyeleri arasında uçtan uca şifreli senkronizasyon', '~/AND/Eklentiler/DeltaX/and-plugin-DeltaX'],
-      ozel_chat: ['Özel Chat', '2.1.1', 'Eşlerle doğrudan mesajlaş, dosya gönder ve gelen dosya isteklerini onayla', '~/AND/Eklentiler/ozel_chat/and-plugin-ozel_chat'],
-      site: ['Site', '1.3.1', 'Kendi çok sayfalı kişisel sitenizi oluşturun, düzenleyin ve yayınlayın', '~/AND/Eklentiler/site/and-plugin-site'],
-      pembis: ['Pembiş Tema', '1.2.0'],
-    },
-    ayarlar: {
-      aciklama: 'Kimliğin ve profilin, yüklü eklentiler ve temalar.',
-      kv: [['Tema', '<span data-tema-adi>Klasik</span>'], ['Sürüm', SURUM], ['Eklentiler', '<span data-yuklu-sayi>5 yüklü, 5 açık</span>'], ['Veri dizini', '~/.config/and']],
-      ipucu: 'Temayı değiştirmek için Ayarlar → Temalar.',
-      yanBaslik: 'Temalar', yanAlt: 'Ayarlar → Temalar’dan seçilir', etkin: ' ● etkin',
-    },
-    hakkinda: {
-      aciklama: 'Sürüm, telif ve lisans bildirimi, gizlilik özeti, topluluk kuralları ve üçüncü taraf bileşenlerin lisansları.',
-      kv: [['Lisans', 'GNU AGPL-3.0'], ['Kaynak kodu', DEPO], ['Bileşenler', '146 açık kaynak bileşen']],
-      garanti: 'Bu program HİÇBİR GARANTİ olmadan sunulur; GNU AGPL-3.0 koşullarıyla değiştirip yeniden dağıtabilirsin. Ayrıntılar için enter.',
-    },
-    cikis: 'AND’ı kapatır. Konular, sohbet geçmişi ve kimliğin bu bilgisayarda kalır; bir sonraki açılışta ağa yeniden bağlanırsın.',
-  },
-};
-
-// ─── Ana ekran kopyası ──────────────────────────────────────────────────────
-
-const ad = (isim) => (KISI[isim] ? `<span style="color:${KISI[isim]}">${e(isim)}</span>` : `<span class="t-isaret">${e(isim)}</span>`);
-const sil = (s) => `<span class="t-sil">${s}</span>`;
-const soluk = (s) => `<span class="t-soluk">${s}</span>`;
-
+// og.html'deki amblem: bloklar vurgu, gölgeler seçim renginde.
 function amblem() {
   return LOGO.map((s) => s.replace(/█+|[^█ ]+/g, (m) => (m[0] === '█' ? `<span class="d">${m}</span>` : `<span class="g">${m}</span>`))).join('\n');
-}
-
-function durum(r) {
-  return `<span class="t-ok">●</span> ${r.es(23)}${sil('  ·  ')}${soluk(r.dugum(4))}`;
-}
-
-function cubuk(isim, n, enCok, renk) {
-  const dolu = Math.max(1, Math.round((n / enCok) * 20));
-  const adHucre = renk === undefined ? e(isim) : renk;
-  return `<p class="t-cubuk"><span class="t-cubuk-ad">${adHucre}</span><span class="t-dolu">${'━'.repeat(dolu)}</span><span class="t-kalan">${'─'.repeat(20 - dolu)}</span><span class="t-sayi">${String(n).padStart(5)}</span></p>`;
-}
-
-function menu(r) {
-  const gruplar = [
-    ['topluluk', ['forum', 'sohbet']],
-    ['eklentiler', ['deltax', 'ozel_chat', 'site']],
-    ['sistem', ['ayarlar', 'hakkinda', 'cikis']],
-  ];
-  const eklenti = new Set(['deltax', 'ozel_chat', 'site']);
-  return gruplar.map(([g, ogeler], gi) => {
-    const satirlar = ogeler.map((id, i) => {
-      const dal = i === ogeler.length - 1 ? '└── ' : '├── ';
-      const rozet = id === 'ozel_chat' ? `<span class="t-rozet" aria-hidden="true">  ● 2</span><span class="gorsel-gizli">, ${r.okunmamis}</span>` : '';
-      const ek = eklenti.has(id) ? ` data-eklenti="${id}"` : '';
-      return `<div class="t-oge" role="option" id="t-o-${id}" aria-selected="${id === 'forum'}" data-panel="${id}"${ek}><span class="t-on" aria-hidden="true"></span><span class="t-dal" aria-hidden="true">${dal}</span><span class="t-etiket" data-kapali="${e(r.kapali)}">${e(r.ogeler[id])}</span>${rozet}</div>`;
-    }).join('');
-    const bos = gi > 0 ? '<div class="t-bos" aria-hidden="true"></div>' : '';
-    return `${bos}<div role="group" aria-labelledby="t-g-${g}"><div class="t-grup" id="t-g-${g}"><span aria-hidden="true">▾ </span>${e(r.gruplar[g])}</div>${satirlar}</div>`;
-  }).join('');
-}
-
-function paneller(r, dil) {
-  const ara = '<div class="t-ara"></div>';
-  const baslik = (t, sag = '') => `<p class="t-baslik"><b>${e(t)}</b>${sag}</p>`;
-  const aciklama = (s, ek = '') => `<p class="t-aciklama"${ek}>${e(s)}</p>`;
-  const kv = (gen, satirlar) => satirlar.map(([k, v]) => `<p class="t-kv"><span style="width:${gen}ch">${e(k)}</span><span>${v}</span></p>`).join('');
-  const panel = (id, ana, yan = '') => `<div class="t-panel" data-panel-icerik="${id}"${id === 'forum' ? '' : ' hidden'}><div class="t-ana">${ana}</div>${yan ? `<div class="t-yan">${yan}</div>` : ''}</div>`;
-
-  const f = r.forum;
-  const konular = f.konular.map(([t, kat, yazar, zaman, yanit]) => {
-    const meta = [soluk(e(kat)), ad(yazar), soluk(e(zaman))].concat(yanit ? [soluk(e(yanit))] : []).join(sil('  ·  '));
-    return `<p class="t-satir"><span class="t-isaret">▸ </span><b>${e(t)}</b></p><p class="t-satir">  ${meta}</p>${ara}`;
-  }).join('');
-  const enCokKat = f.sayilar[0][1];
-  const forum = panel('forum',
-    baslik(r.ogeler.forum, soluk(f.sag)) + aciklama(f.aciklama) + ara + `<p class="t-bolum">${e(f.son)}</p>` + ara + konular,
-    `<p class="t-bolum">${e(f.yanBaslik)}</p><p class="t-soluk">${e(f.yanAlt)}</p>${ara}` + f.sayilar.map(([k, n]) => cubuk(k, n, enCokKat)).join(''));
-
-  const s = r.sohbet;
-  const mesajlar = s.mesajlar.map(([zaman, kisi, metin]) => {
-    const renk = KISI[kisi] ? `style="color:${KISI[kisi]}"` : 'class="t-isaret"';
-    return `<p class="t-satir">${soluk(zaman)}  <b ${renk}>${e(kisi.padEnd(14))}</b>  ${e(metin)}</p>`;
-  }).join('');
-  const enCokKisi = s.sayilar[0][1];
-  const sohbet = panel('sohbet',
-    baslik(r.ogeler.sohbet, soluk(s.sag)) + aciklama(s.aciklama) + ara + `<p class="t-bolum">${e(s.son)}</p>` + mesajlar,
-    `<p class="t-bolum">${e(s.yanBaslik)}</p><p class="t-soluk">${e(s.yanAlt)}</p>${ara}` + s.sayilar.map(([k, n]) => cubuk(k, n, enCokKisi, ad(k))).join(''));
-
-  const ek = r.eklenti;
-  const yuklu = ['deltax', 'pembis', 'ozel_chat', 'site'].map((id) => {
-    const [isim, surum] = r.eklentiler[id];
-    return `<p class="t-baslik"><span><span class="t-ok" data-eklenti-nokta="${id}">●</span> ${e(isim)}</span>${soluk(surum)}</p>`;
-  }).join('');
-  const eklentiPaneli = (id) => {
-    const [isim, surum, desc, program] = r.eklentiler[id];
-    const durumlar = `<span class="t-ok" data-durum-acik>${e(ek.acik)}</span><span class="t-soluk" data-durum-kapali hidden>${e(ek.kapali)}</span>`;
-    return panel(id,
-      baslik(isim, durumlar) + aciklama(desc) + ara +
-      kv(10, [[ek.surum, `v${surum}`], [ek.yazar, 'AND'], [ek.program, e(program)]]) + ara +
-      aciklama(ek.ipucuAcik, ' data-ipucu-acik') + aciklama(ek.ipucuKapali, ' data-ipucu-kapali hidden'),
-      `<p class="t-bolum">${e(ek.yanBaslik)}</p>${ara}${yuklu}`);
-  };
-
-  const ay = r.ayarlar;
-  const temaSatirlari = TEMALAR.map((t) => {
-    const isim = t[dil];
-    const ornek = t.renk.map((c) => `<span style="color:${c}">██</span> `).join('');
-    const etkin = t.id === 'klasik';
-    return `<button type="button" class="t-tema-satir${etkin ? ' etkin' : ''}" data-tema-sec="${t.id}" aria-pressed="${etkin}" aria-label="${e(R[dil].temaAdi(isim).replace(/<[^>]+>/g, ''))}"><span class="t-tema-ad">${e(isim.padEnd(12))}</span>  ${ornek}<span class="t-ok" data-etkin${etkin ? '' : ' hidden'}>${e(ay.etkin)}</span></button>`;
-  }).join('');
-  const ayarlar = panel('ayarlar',
-    baslik(r.ogeler.ayarlar) + aciklama(ay.aciklama) + ara + kv(14, ay.kv.map(([k, v]) => [k, v])) + ara + aciklama(ay.ipucu),
-    `<p class="t-bolum">${e(ay.yanBaslik)}</p><p class="t-soluk">${e(ay.yanAlt)}</p>${ara}${temaSatirlari}`);
-
-  const h = r.hakkinda;
-  const hakkinda = panel('hakkinda',
-    baslik(r.ogeler.hakkinda, soluk(SURUM)) + aciklama(h.aciklama) + ara + kv(14, h.kv.map(([k, v]) => [k, e(v)])) + ara + aciklama(h.garanti));
-
-  const cikis = panel('cikis', baslik(r.ogeler.cikis) + aciklama(r.cikis));
-
-  return forum + sohbet + eklentiPaneli('deltax') + eklentiPaneli('ozel_chat') + eklentiPaneli('site') + ayarlar + hakkinda + cikis;
-}
-
-function kopya(dil) {
-  const r = R[dil];
-  const t = TEMALAR[0][dil];
-  const ipucu = (eklentili) => {
-    const ciftler = [['↑↓', r.ipucu.gezin], ['enter', r.ipucu.ac]].concat(eklentili ? [['space', r.ipucu.eklenti]] : []).concat([['q', r.ipucu.cikis]]);
-    return ciftler.map(([k, d]) => `<kbd>${k}</kbd> ${e(d)}`).join(sil(' · '));
-  };
-  const sayilar = r.sayilar.map(([k, v, veri]) => `<div><dt>${e(k)}</dt><dd${veri ? ` ${veri}` : ''}>${e(v)}</dd></div>`).join('');
-  return `<div class="terminal" data-terminal>
-<div class="t-cerceve">
-<div class="t-ust"><span><span class="hap">AND</span></span><span class="t-tema">${r.temaAdi(e(t))}${sil(' · ')}${SURUM}</span></div>
-<div class="t-uzun"><pre class="t-amblem" aria-hidden="true">${amblem()}</pre><p class="t-kimlik"><span class="t-ad">umut</span>
-${soluk('12D3KooW9r…dWngf13xEF')}
-<span data-es>${durum(r)}</span></p><dl class="t-sayilar">${sayilar}</dl></div>
-<p class="t-kisa"><span class="t-ad">umut</span>${sil('  ·  ')}${soluk('12D3KooW9r…dWngf13xEF')}${sil('  ·  ')}<span data-es>${durum(r)}</span></p>
-<hr class="t-ayrac" aria-hidden="true">
-<div class="t-paneller">
-<div class="t-agac" role="listbox" tabindex="0" aria-label="${e(r.menu)}" aria-activedescendant="t-o-forum">${menu(r)}</div>
-<div class="t-ayrinti">${paneller(r, dil)}</div>
-</div>
-<div class="t-alt"><hr class="t-ayrac" aria-hidden="true"><p class="t-ipucu" data-ipucu-normal>${ipucu(false)}</p><p class="t-ipucu" data-ipucu-eklenti hidden>${ipucu(true)}</p></div>
-</div>
-</div>`;
 }
 
 // ─── Ağ çizimi ("Nasıl çalışır") ────────────────────────────────────────────
@@ -366,8 +106,8 @@ const M = {
     h1: 'A forum with no server in the middle.',
     ozet: 'AND runs in your terminal. Topics, chat and private messages travel directly between the people using it, each signed with a key that only its author holds. There are no accounts and no central server.',
     cta1: 'Get AND', cta2: 'Source code on GitHub',
-    ekranBaslik: 'AND’s home screen',
-    ekranNot: 'This is AND’s home screen, drawn in HTML with the app’s own colours and text. Pick an item in the menu, or select the menu and use ↑ and ↓.',
+    ekranBaslik: 'AND’s desktop window',
+    ekranNot: 'This is AND’s desktop window, drawn in HTML with the app’s own colours and text. Pick a screen in the sidebar, open a topic or try a theme. AND also has a full-screen terminal interface: <code>and --terminal</code>.',
     tema: 'Theme',
     ozellik: {
       id: 'features', baslik: 'What’s in it',
@@ -470,8 +210,8 @@ const M = {
     h1: 'Ortada sunucu olmayan bir forum.',
     ozet: 'AND terminalinde çalışır. Konular, sohbet ve özel mesajlar onu kullananlar arasında doğrudan dolaşır; her biri yalnızca yazarının elindeki bir anahtarla imzalanır. Hesap yok, merkezi sunucu yok.',
     cta1: 'AND’ı kur', cta2: 'GitHub’da kaynak kodu',
-    ekranBaslik: 'AND’ın ana ekranı',
-    ekranNot: 'Bu, AND’ın ana ekranı; uygulamanın kendi renkleri ve metinleriyle HTML olarak çizildi. Menüden bir öğe seç ya da menüye gelip ↑ ve ↓ tuşlarını kullan.',
+    ekranBaslik: 'AND’ın masaüstü penceresi',
+    ekranNot: 'Bu, AND’ın masaüstü penceresi; uygulamanın kendi renkleri ve metinleriyle HTML olarak çizildi. Kenar çubuğundan bir ekran seç, bir konu aç ya da bir tema dene. AND’ın tam ekran bir terminal arayüzü de var: <code>and --terminal</code>.',
     tema: 'Tema',
     ozellik: {
       id: 'neler-var', baslik: 'Neler var',
@@ -674,9 +414,9 @@ ${ust(m)}
 </section>
 <section class="ekran sayfa" aria-labelledby="ekran-baslik">
 <h2 id="ekran-baslik" class="gorsel-gizli">${e(m.ekranBaslik)}</h2>
-${kopya(dil)}
+${pencere(dil, { e, SURUM, DEPO, TEMALAR })}
 <div class="ekran-alt">
-<p class="ekran-not">${e(m.ekranNot)}</p>
+<p class="ekran-not">${m.ekranNot}</p>
 <fieldset class="tema-sec"><legend>${e(m.tema)}</legend>${temaDugmeleri}</fieldset>
 </div>
 </section>

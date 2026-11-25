@@ -107,6 +107,86 @@ denetim('temalar-kontrast', () => {
   bekle(!sorunlar.length, sorunlar.join('; '));
 });
 
+// ─── Ana ekran kopyası: AND'ın masaüstü penceresi ───────────────────────────
+
+const EKRANLAR = ['forum', 'sohbet', 'ozel_chat', 'site', 'admin', 'deltax', 'ayarlar', 'hakkinda'];
+const SEKMELER = ['profil', 'gorunum', 'dil', 'eklentiler', 'ag'];
+
+// etiketler, sınıf listesinde `sinif` olan açılış etiketlerinin özniteliklerini
+// belgedeki sırayla döndürür.
+function etiketler(html, sinif) {
+  const out = [];
+  for (const m of html.matchAll(/<([a-z]+)\s([^>]*)>/g)) {
+    const oz = { etiket: m[1] };
+    for (const a of m[2].matchAll(/([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:="([^"]*)")?/g)) oz[a[1]] = a[2] === undefined ? '' : a[2];
+    if ((oz.class || '').split(/\s+/).includes(sinif)) out.push(oz);
+  }
+  return out;
+}
+
+denetim('kopya-eski-yok', () => {
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    for (const eski of ['class="terminal"', 't-agac', 'data-panel-icerik', 'data-ipucu-normal']) bekle(!html.includes(eski), `${dil}: eski kopyadan "${eski}" kaldı`);
+    bekle(html.includes('data-pencere'), `${dil}: data-pencere yok`);
+  }
+});
+
+denetim('kopya-ekranlar', () => {
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const nav = etiketler(html, 'p-nav');
+    bekle(ayni(nav.map((n) => n['data-ekran']), EKRANLAR), `${dil}: kenar çubuğu ekranları: ${nav.map((n) => n['data-ekran']).join(', ')}`);
+    bekle(nav.every((n) => n.etiket === 'button'), `${dil}: p-nav düğme değil`);
+    const secili = nav.filter((n) => n['aria-current'] === 'page').map((n) => n['data-ekran']);
+    bekle(ayni(secili, ['forum']), `${dil}: başlangıçta seçili: ${secili.join(', ')}`);
+    const ekran = etiketler(html, 'p-ekran');
+    bekle(ayni(ekran.map((e) => e['data-ekran-icerik']), EKRANLAR), `${dil}: ekranlar: ${ekran.map((e) => e['data-ekran-icerik']).join(', ')}`);
+    const gorunen = ekran.filter((e) => !('hidden' in e)).map((e) => e['data-ekran-icerik']);
+    bekle(ayni(gorunen, ['forum']), `${dil}: JS olmadan görünen ekranlar: ${gorunen.join(', ')}`);
+  }
+});
+
+denetim('kopya-konular', () => {
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const konular = etiketler(html, 'p-konu');
+    bekle(konular.length >= 4, `${dil}: ${konular.length} konu (en az 4)`);
+    const okumalar = etiketler(html, 'p-okuma');
+    bekle(ayni(konular.map((k) => k['data-konu']), okumalar.map((o) => o['data-konu-icerik'])), `${dil}: konu listesi ile okuma alanları eşleşmiyor`);
+    bekle(ayni(okumalar.map((o) => 'hidden' in o), okumalar.map((_, i) => i > 0)), `${dil}: yalnızca ilk konu açık olmalı`);
+    bekle(konular[0]['aria-current'] === 'true' && konular.slice(1).every((k) => !('aria-current' in k)), `${dil}: ilk konu seçili olmalı`);
+    const kategoriler = new Set(etiketler(html, 'p-kat').map((k) => k['data-kategori']));
+    bekle(kategoriler.size >= 3, `${dil}: ${kategoriler.size} kategori düğmesi`);
+    const yetim = konular.filter((k) => !kategoriler.has(k['data-kategori'])).map((k) => k['data-kategori']);
+    bekle(!yetim.length, `${dil}: kenar çubuğunda olmayan kategoriler: ${yetim.join(', ')}`);
+  }
+});
+
+denetim('kopya-sekmeler', () => {
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const sekme = etiketler(html, 'p-sekme');
+    bekle(ayni(sekme.map((s) => s['data-sekme']), SEKMELER), `${dil}: sekmeler: ${sekme.map((s) => s['data-sekme']).join(', ')}`);
+    const icerik = [...html.matchAll(/data-sekme-icerik="([^"]+)"/g)].map((m) => m[1]);
+    bekle(ayni(icerik, SEKMELER), `${dil}: sekme içerikleri: ${icerik.join(', ')}`);
+    const kartlar = etiketler(html, 'p-tema-karti');
+    bekle(ayni(kartlar.map((k) => k['data-tema-sec']), TEMA_KIMLIKLERI), `${dil}: tema kartları: ${kartlar.map((k) => k['data-tema-sec']).join(', ')}`);
+  }
+});
+
+denetim('kopya-esitlik', () => {
+  for (const oz of ['data-ekran', 'data-ekran-icerik', 'data-konu', 'data-konu-icerik', 'data-kategori', 'data-sekme', 'data-sekme-icerik', 'data-tema-sec']) {
+    const dizi = (html) => [...html.matchAll(new RegExp(`\\s${oz}="([^"]*)"`, 'g'))].map((m) => m[1]);
+    bekle(ayni(dizi(sayfalar.en), dizi(sayfalar.tr)), `${oz}: EN ve TR farklı`);
+  }
+});
+
+denetim('id-tekil', () => {
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const sayac = {};
+    for (const m of html.matchAll(/\sid="([^"]+)"/g)) sayac[m[1]] = (sayac[m[1]] || 0) + 1;
+    const tekrar = Object.keys(sayac).filter((k) => sayac[k] > 1);
+    bekle(!tekrar.length, `${dil}: birden fazla kez: ${tekrar.join(', ')}`);
+  }
+});
+
 if (basarisiz) {
   console.log(`\n${basarisiz} denetim başarısız.`);
   process.exit(1);
