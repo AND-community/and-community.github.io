@@ -228,6 +228,33 @@ denetim('metin-esitlik', () => {
   bekle(bolumler(sayfalar.en).length === bolumler(sayfalar.tr).length, `bölüm sayısı: EN ${bolumler(sayfalar.en).length}, TR ${bolumler(sayfalar.tr).length}`);
 });
 
+denetim('metin-komut', () => {
+  // Komutlar düz yazının içinde cümle gibi okunmasın: hep <code> içinde.
+  const komutlar = ['and plugin new', 'and plugin install', 'and eklenti yeni', 'and eklenti kur', 'and --terminal'];
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    const kodsuz = html.replace(/<code[^>]*>[\s\S]*?<\/code>/g, '');
+    const dista = komutlar.filter((k) => kodsuz.includes(k));
+    bekle(!dista.length, `${dil}: <code> dışında: ${dista.join(', ')}`);
+  }
+});
+
+denetim('metin-eklenti-pencere', () => {
+  // Pencerenin içinde her sistemde çalışanlar AND'la gelen (arayüzlü)
+  // eklentilerdir; terminal eklentileri Linux'ta ayrı pencerede, macOS'ta
+  // yalnızca terminal arayüzünde açılır.
+  bekle(!sayfalar.en.includes('In the desktop app they run inside AND’s window'), 'en: eklentilerin hepsi pencerede çalışıyor deniyor');
+  bekle(!sayfalar.tr.includes('Masaüstü uygulamasında AND’ın penceresinin içinde çalışırlar'), 'tr: eklentilerin hepsi pencerede çalışıyor deniyor');
+});
+
+denetim('kopya-isaret-noktasi', () => {
+  // Kopya, sayfaya ekran okuyucu için ikinci bir gezinme ya da bölge
+  // işaret noktası eklememeli.
+  for (const [dil, html] of Object.entries(sayfalar)) {
+    bekle(!/<nav class="p-kenar"/.test(html), `${dil}: kenar çubuğu <nav>`);
+    bekle(!/<section class="p-ekran/.test(html), `${dil}: ekranlar <section>`);
+  }
+});
+
 denetim('metin-guncelleme', () => {
   const tarih = [...oku('sitemap.xml').matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
   bekle(tarih.length === 2 && tarih.every((t) => t >= '2026-11-25'), `sitemap lastmod: ${tarih.join(', ')}`);

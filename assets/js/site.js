@@ -173,6 +173,21 @@
         hepsi('[data-sekme-icerik]').forEach((x) => { x.hidden = x.dataset.sekmeIcerik !== sekme.dataset.sekme; });
       }
     });
+
+    // Kenar çubuğunda ↑ ↓ Home End odağı görünen öğeler arasında gezdirir;
+    // ekranı Enter ya da Space açar.
+    const kenar = pencere.querySelector('.p-kenar');
+    if (kenar) {
+      kenar.addEventListener('keydown', (olay) => {
+        const ogeler = Array.from(kenar.querySelectorAll('.p-nav, .p-kat')).filter(gorunur);
+        const i = ogeler.indexOf(document.activeElement);
+        if (i < 0) return;
+        const j = { ArrowDown: Math.min(i + 1, ogeler.length - 1), ArrowUp: Math.max(i - 1, 0), Home: 0, End: ogeler.length - 1 }[olay.key];
+        if (j === undefined) return;
+        olay.preventDefault();
+        ogeler[j].focus();
+      });
+    }
   }
 
   // ─── Açılış: eşler bağlanır ───────────────────────────────────────────────

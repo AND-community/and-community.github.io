@@ -49,7 +49,7 @@ const AVATAR = { umut: '#0ea5e9', zeynep: '#14b8a6', mehmet: '#f97316', deniz: '
 const R = {
   en: {
     pencereEtiket: 'AND desktop window (replica)',
-    kenarEtiket: 'Sidebar',
+    kenarEtiket: 'AND sidebar (replica)',
     arama: 'Search or jump to…',
     gruplar: { topluluk: 'Community', iletisim: 'Communication', icerik: 'Content', yonetim: 'Moderation', gelistirme: 'Development' },
     ogeler: { forum: 'Forum', sohbet: 'Chat', ozel_chat: 'Private Chat', site: 'Website', admin: 'Admin Panel', deltax: 'DeltaX', ayarlar: 'Settings', hakkinda: 'About AND' },
@@ -166,7 +166,7 @@ const R = {
   },
   tr: {
     pencereEtiket: 'AND masaüstü penceresi (kopya)',
-    kenarEtiket: 'Kenar çubuğu',
+    kenarEtiket: 'AND kenar çubuğu (kopya)',
     arama: 'Ara ya da git…',
     gruplar: { topluluk: 'Topluluk', iletisim: 'İletişim', icerik: 'İçerik', yonetim: 'Yönetim', gelistirme: 'Geliştirme' },
     ogeler: { forum: 'Forum', sohbet: 'Sohbet', ozel_chat: 'Özel Chat', site: 'Site', admin: 'Yönetici Paneli', deltax: 'DeltaX', ayarlar: 'Ayarlar', hakkinda: 'AND hakkında' },
@@ -294,7 +294,8 @@ function pencere(dil, { e, SURUM, DEPO, TEMALAR }) {
   const sus = (metin, ikonAd, sinif = '') => `<span class="p-dugme${sinif ? ` ${sinif}` : ''}" aria-hidden="true">${ikonAd ? ikon(ikonAd) : ''}${e(metin)}</span>`;
   const arac = (ikonAd, baslik, sag = '', alt = '') => `<header class="p-arac">${ikon(ikonAd, 'p-arac-ikon')}<h3>${e(baslik)}</h3>${alt ? `<span class="p-arac-alt">${e(alt)}</span>` : ''}<span class="p-bosluk"></span>${sag}</header>`;
   const kv = (satirlar) => `<dl class="p-kv">${satirlar.map(([k, v]) => `<div><dt>${e(k)}</dt><dd>${e(v)}</dd></div>`).join('')}</dl>`;
-  const ekran = (id, govde) => `<section class="p-ekran p-ekran-${id.replace('_', '-')}" data-ekran-icerik="${id}" aria-label="${e(r.ogeler[id])}"${id === 'forum' ? '' : ' hidden'}>${govde}</section>`;
+  // Kopyanın ekranları ve kenar çubuğu sayfaya işaret noktası (nav, region) eklemez.
+  const ekran = (id, govde) => `<div class="p-ekran p-ekran-${id.replace('_', '-')}" role="group" data-ekran-icerik="${id}" aria-label="${e(r.ogeler[id])}"${id === 'forum' ? '' : ' hidden'}>${govde}</div>`;
 
   // Kenar çubuğu
   const nav = (id, ikonAd, ek = '') => `<button type="button" class="p-nav" data-ekran="${id}"${id === 'forum' ? ' aria-current="page"' : ''}>${ikon(ikonAd)}<span>${e(r.ogeler[id])}</span>${ek}</button>`;
@@ -303,7 +304,7 @@ function pencere(dil, { e, SURUM, DEPO, TEMALAR }) {
   const kategoriSayisi = (kat) => f.konular.filter((k) => k.kat === kat).length;
   const kategoriler = `<div class="p-alt-gezinme" role="group" aria-label="${e(r.kategoriEtiket)}">${f.kategoriler.map(([id, isim]) => `<button type="button" class="p-kat" data-kategori="${id}" aria-pressed="false"><span>${e(isim)}</span><span class="p-sayi">${kategoriSayisi(id)}</span></button>`).join('')}</div>`;
   const grup = (g) => `<p class="p-grup">${e(r.gruplar[g])}</p>`;
-  const kenar = `<nav class="p-kenar" aria-label="${e(r.kenarEtiket)}">
+  const kenar = `<div class="p-kenar" role="group" aria-label="${e(r.kenarEtiket)}">
 <div class="p-marka"><img src="/assets/img/logo.png" width="26" height="26" alt=""><span>AND</span></div>
 <div class="p-arama" aria-hidden="true">${ikon('ara')}<span>${e(r.arama)}</span><kbd>Ctrl K</kbd></div>
 <div class="p-gezinme">
@@ -312,10 +313,10 @@ ${grup('iletisim')}${nav('ozel_chat', KATEGORI_IKONU.iletisim, `${calisan}<b cla
 ${grup('icerik')}${nav('site', KATEGORI_IKONU.icerik)}
 ${grup('yonetim')}${nav('admin', KATEGORI_IKONU.yonetim)}
 ${grup('gelistirme')}${nav('deltax', KATEGORI_IKONU.gelistirme, calisan)}
-<div class="p-gezinme-alt">${nav('ayarlar', 'ayarlar')}${nav('hakkinda', 'bilgi')}</div>
 </div>
+<div class="p-gezinme-alt">${nav('ayarlar', 'ayarlar')}${nav('hakkinda', 'bilgi')}</div>
 <div class="p-kullanici" aria-hidden="true">${avatar('umut', 'kucuk')}<span class="p-kullanici-bilgi"><b>umut</b><span>${e(r.profil)}</span></span>${ikon('guc')}</div>
-</nav>`;
+</div>`;
 
   // Forum (forum eklentisi)
   const govdeHtml = (parca) => {

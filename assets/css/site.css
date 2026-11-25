@@ -346,7 +346,8 @@ h1, h2, h3 { text-wrap: balance; }
 
 .pencere svg { flex: none; }
 :where(.pencere) button { margin: 0; font: inherit; color: inherit; cursor: pointer; }
-.pencere :focus-visible { outline: none; box-shadow: 0 0 0 2px var(--p-zemin), 0 0 0 4px var(--p-vurgu); }
+/* Odak halkası outline'dır: seçili öğelerin kendi box-shadow'u onu ezmesin. */
+.pencere :focus-visible { outline: 2px solid var(--p-vurgu); outline-offset: 2px; }
 .pencere h3, .pencere h4, .pencere h5 { margin: 0; font-family: var(--p-baslik); font-weight: 600; letter-spacing: -0.01em; }
 :where(.pencere) p { margin: 0; }
 .pencere a { color: var(--p-vurgu); text-decoration: underline; text-decoration-color: var(--p-vurgu-cizgi); text-underline-offset: 3px; }
@@ -411,7 +412,8 @@ h1, h2, h3 { text-wrap: balance; }
 .p-kat:hover { background: rgba(255, 255, 255, 0.045); color: var(--p-yazi); }
 .p-kat[aria-pressed="true"] { background: var(--p-vurgu-zemin); color: #ffffff; }
 .p-kat[aria-pressed="true"] .p-sayi { color: var(--p-vurgu); }
-.p-gezinme-alt { margin-top: auto; padding-top: 12px; }
+/* Ayarlar ve AND hakkında kaydırılan listenin dışında: pencere kısa olsa da görünür kalır. */
+.p-gezinme-alt { flex: none; padding: 6px 12px 8px; }
 .p-kullanici { display: flex; align-items: center; gap: 10px; padding: 12px 16px 14px; border-top: 1px solid var(--p-cizgi); color: var(--p-yazi-3); }
 .p-kullanici-bilgi { flex: 1; min-width: 0; display: grid; line-height: 1.25; }
 .p-kullanici-bilgi b { color: var(--p-yazi); font-weight: 600; }
@@ -579,7 +581,7 @@ h1, h2, h3 { text-wrap: balance; }
 .p-sekme[aria-current="true"], .p-sekme-sabit.etkin { color: var(--p-yazi); font-weight: 600; }
 .p-sekme[aria-current="true"] svg { color: var(--p-vurgu); }
 .p-sekme[aria-current="true"]::after, .p-sekme-sabit.etkin::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: 0; height: 2px; border-radius: 2px 2px 0 0; background: var(--p-vurgu); }
-.pencere .p-sekme:focus-visible { border-radius: 6px; box-shadow: inset 0 0 0 2px var(--p-vurgu); }
+.pencere .p-sekme:focus-visible { border-radius: 6px; outline-offset: -2px; }
 .p-sekme-icerik { display: flex; flex-direction: column; gap: 12px; max-width: 900px; }
 .p-tema-izgarasi { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 .p-tema-karti {
@@ -642,6 +644,7 @@ h1, h2, h3 { text-wrap: balance; }
   .p-marka { justify-content: center; padding: 14px 0 10px; }
   .p-marka span, .p-arama, .p-grup, .p-alt-gezinme, .p-kullanici-bilgi, .p-kullanici > svg { display: none; }
   .p-gezinme { padding: 4px 8px 10px; }
+  .p-gezinme-alt { padding: 4px 8px 8px; }
   .p-nav { justify-content: center; height: 38px; padding: 0; }
   .p-nav > span:first-of-type { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .p-nav .p-nokta, .p-nav .p-okunmamis { position: absolute; top: 7px; right: 7px; width: 6px; height: 6px; box-shadow: none; }

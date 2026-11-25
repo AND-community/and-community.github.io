@@ -20,6 +20,9 @@ const IMZA_ANAHTARI = '40f36782755018ac90475013594691b41886813ab842148d537b4f44f
 
 const e = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const a = (href, metin, ek = '') => `<a href="${e(href)}"${ek}>${metin}</a>`;
+// kod, metindeki `komut` parçalarını <code> yapar; metnin geri kalanı kaçırılır
+// (bağlantı içeren metinler zaten HTML'dir, onlarda yalnızca dönüşüm yapılır).
+const kod = (s) => (s.includes('<a ') ? s : e(s)).replace(/`([^`]+)`/g, '<code>$1</code>');
 
 // AND'ın logosu (küre) ve ondan üretilen simgeler: node tools/simge-uret.js
 const SIMGELER = `<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
@@ -107,7 +110,7 @@ const M = {
     ozet: 'AND opens in its own window on your computer, or in the terminal. Topics, chat and private messages travel directly between the people using it, each signed with a key that only its author holds. There are no accounts and no central server.',
     cta1: 'Get AND', cta2: 'Source code on GitHub',
     ekranBaslik: 'AND’s desktop window',
-    ekranNot: 'This is AND’s desktop window, drawn in HTML with the app’s own colours and text. Pick a screen in the sidebar, open a topic or try a theme. AND also has a full-screen terminal interface: <code>and --terminal</code>.',
+    ekranNot: 'This is AND’s desktop window, drawn in HTML with the app’s own colours and text. Pick a screen in the sidebar, open a topic or try a theme. AND also has a full-screen terminal interface: `and --terminal`.',
     tema: 'Theme',
     ozellik: {
       id: 'features', baslik: 'What’s in it',
@@ -120,7 +123,7 @@ const M = {
         ['Files', 'Send a file to a peer. Nothing arrives without the recipient’s approval, and interrupted transfers resume.'],
         ['Personal site', 'Publish up to 20 pages of your own. They’re signed and synced like the forum, and your edits reach everyone.'],
         ['Moderation', 'The founder signs moderator certificates. Moderators can delete topics early and ban peers for an hour or for good; every decision is signed and logged.'],
-        ['Plugins', 'Separate programs that extend AND, grouped by category. In the desktop app they run inside AND’s window, and the bundled ones are drawn with AND’s own components. Each asks for the permissions it needs the first time you open it; add more from a folder, an archive or an https address with and plugin install.'],
+        ['Plugins', 'Separate programs that extend AND, grouped by category. In the desktop app the bundled ones run inside AND’s window and are drawn with AND’s own components; on Windows, terminal plugins run inside the window too. Each asks for the permissions it needs the first time you open it; add more from a folder, an archive or an https address with `and plugin install`.'],
         ['Themes and languages', 'Ten built-in themes and a custom accent colour, and an interface in Turkish, English, German, Spanish, French and Russian.'],
         ['Updates', 'Official releases update themselves and their plugins, and only after the release’s signature checks out.'],
         ['Search', `The ${a(`${ORG}/and-arama-motoru`, 'AND Search Engine')} joins the network as a read-only peer and makes forum, chat and site content searchable from the terminal.`],
@@ -142,7 +145,7 @@ const M = {
     },
     kurulum: {
       id: 'get-and', baslik: 'Get AND',
-      giris: 'AND runs on Windows, Linux and macOS. On Windows it opens in its own window; on Linux and macOS the same interface opens in your browser. In any terminal, and --terminal opens the terminal interface.',
+      giris: 'AND runs on Windows, Linux and macOS. On Windows it opens in its own window; on Linux and macOS the same interface opens in your browser. In any terminal, `and --terminal` opens the terminal interface.',
       yedek: `Every release has a ready-to-run archive for each platform on the ${a(`${DEPO}/releases`, 'Releases page')}.`,
       derleBaslik: 'Build from source',
       derle: 'You need Go 1.26.4 or later. These commands build AND and its Forum plugin, which draws the forum:',
@@ -183,10 +186,10 @@ const M = {
         ['Do I need a server, a domain or an account?', 'No. Install AND, pick a name and a password, and you’re on the network. Every node is both a client and a server.'],
         ['How long do posts stay?', 'Topics delete themselves 5 days after they’re posted, chat messages after 48 hours. Content that has already spread can’t be guaranteed to disappear from every node.'],
         ['I forgot my password.', 'On the login screen click “Restore your identity” (ctrl+r in the terminal interface) and type your recovery code. AND restores your identity and asks for a new password.'],
-        ['I lost my recovery code.', 'If you still know your password, open the terminal interface (and --terminal), go to Settings, then the Info tab, and press m to show the code. If you’ve lost both, nobody can restore your identity: it never leaves your computer.'],
+        ['I lost my recovery code.', 'If you still know your password, open the terminal interface (`and --terminal`), go to Settings, then the Info tab, and press m to show the code. If you’ve lost both, nobody can restore your identity: it never leaves your computer.'],
         ['Which systems does it run on?', 'Windows, Linux and macOS. On Windows AND opens in its own window through WebView2, which comes with Windows 10 and 11; on Linux and macOS the same interface opens in your default browser, and the terminal interface works in any terminal. Releases are built for x86-64 on all three, and for ARM64 on Linux and macOS.'],
         ['Is it free?', 'Yes. AND is free software under the GNU AGPL-3.0: you can use, study, change and share it. If you run a modified version for others over a network, you have to offer them its source code.'],
-        ['Can I write my own plugin?', `Yes. A plugin is a separate program that talks to AND over a local HTTP API with its own key, and can show its screens with AND’s own components. and plugin new creates a working project; the ${a(`${DOSYA}/PLUGINS.md`, 'plugin guide')} explains the rest.`],
+        ['Can I write my own plugin?', `Yes. A plugin is a separate program that talks to AND over a local HTTP API with its own key, and can show its screens with AND’s own components. <code>and plugin new</code> creates a working project; the ${a(`${DOSYA}/PLUGINS.md`, 'plugin guide')} explains the rest.`],
         ['Who moderates?', 'The founder, whose key is built into AND, and the moderators the founder appoints with signed certificates, which can be revoked at any time. They can delete topics early and ban peers; every node checks each decision’s signature.'],
       ],
     },
@@ -213,7 +216,7 @@ const M = {
     ozet: 'AND bilgisayarında kendi penceresinde ya da terminalde açılır. Konular, sohbet ve özel mesajlar onu kullananlar arasında doğrudan dolaşır; her biri yalnızca yazarının elindeki bir anahtarla imzalanır. Hesap yok, merkezi sunucu yok.',
     cta1: 'AND’ı kur', cta2: 'GitHub’da kaynak kodu',
     ekranBaslik: 'AND’ın masaüstü penceresi',
-    ekranNot: 'Bu, AND’ın masaüstü penceresi; uygulamanın kendi renkleri ve metinleriyle HTML olarak çizildi. Kenar çubuğundan bir ekran seç, bir konu aç ya da bir tema dene. AND’ın tam ekran bir terminal arayüzü de var: <code>and --terminal</code>.',
+    ekranNot: 'Bu, AND’ın masaüstü penceresi; uygulamanın kendi renkleri ve metinleriyle HTML olarak çizildi. Kenar çubuğundan bir ekran seç, bir konu aç ya da bir tema dene. AND’ın tam ekran bir terminal arayüzü de var: `and --terminal`.',
     tema: 'Tema',
     ozellik: {
       id: 'neler-var', baslik: 'Neler var',
@@ -226,7 +229,7 @@ const M = {
         ['Dosyalar', 'Bir eşe dosya gönder. Alıcı onaylamadan hiçbir şey gelmez; yarıda kalan aktarım kaldığı yerden sürer.'],
         ['Kişisel site', 'Kendine ait en çok 20 sayfa yayınla. Sayfalar forum gibi imzalanır ve senkronlanır; yaptığın düzenlemeler herkese ulaşır.'],
         ['Moderasyon', 'Kurucu moderatör sertifikalarını imzalar. Moderatörler bir konuyu erken silebilir, bir eşi bir saatliğine ya da kalıcı olarak banlayabilir; her karar imzalanır ve kaydedilir.'],
-        ['Eklentiler', 'AND’ı genişleten, kategorilere ayrılmış ayrı programlar. Masaüstü uygulamasında AND’ın penceresinin içinde çalışırlar; AND’la gelenler AND’ın kendi bileşenleriyle çizilir. Her biri ihtiyaç duyduğu izinleri ilk açtığında sorar; yenilerini bir klasörden, arşivden ya da https adresinden and eklenti kur ile eklersin.'],
+        ['Eklentiler', 'AND’ı genişleten, kategorilere ayrılmış ayrı programlar. Masaüstü uygulamasında AND’la gelenler AND’ın penceresinin içinde, AND’ın kendi bileşenleriyle çizilerek çalışır; Windows’ta terminal eklentileri de pencerenin içinde çalışır. Her biri ihtiyaç duyduğu izinleri ilk açtığında sorar; yenilerini bir klasörden, arşivden ya da https adresinden `and eklenti kur` ile eklersin.'],
         ['Temalar ve diller', 'On yerleşik tema ve özel vurgu rengi; arayüz Türkçe, İngilizce, Almanca, İspanyolca, Fransızca ve Rusça.'],
         ['Güncellemeler', 'Resmi sürümler kendini ve eklentilerini günceller; bunu yalnızca sürümün imzası doğrulandıktan sonra yapar.'],
         ['Arama', `${a(`${ORG}/and-arama-motoru`, 'AND Arama Motoru')} ağa salt-okunur bir eş olarak katılır; forum, sohbet ve site içeriğini terminalden aranabilir kılar.`],
@@ -248,7 +251,7 @@ const M = {
     },
     kurulum: {
       id: 'kurulum', baslik: 'Kurulum',
-      giris: 'AND, Windows, Linux ve macOS’ta çalışır. Windows’ta kendi penceresinde açılır; Linux ve macOS’ta aynı arayüz tarayıcında açılır. Herhangi bir terminalde and --terminal terminal arayüzünü açar.',
+      giris: 'AND, Windows, Linux ve macOS’ta çalışır. Windows’ta kendi penceresinde açılır; Linux ve macOS’ta aynı arayüz tarayıcında açılır. Herhangi bir terminalde `and --terminal` terminal arayüzünü açar.',
       yedek: `Her sürümde her platform için açılıp çalıştırılmaya hazır bir arşiv vardır: ${a(`${DEPO}/releases`, 'Sürümler sayfası')}.`,
       derleBaslik: 'Kaynaktan derle',
       derle: 'Go 1.26.4 ya da üzeri gerekir. Bu komutlar AND’ı ve forumu çizen Forum eklentisini derler:',
@@ -289,10 +292,10 @@ const M = {
         ['Sunucu, alan adı ya da hesap gerekiyor mu?', 'Hayır. AND’ı kur, bir ad ve parola seç; ağdasın. Her düğüm hem istemci hem sunucudur.'],
         ['Yazılanlar ne kadar kalır?', 'Konular yazıldıktan 5 gün, sohbet mesajları 48 saat sonra kendiliğinden silinir. Yayılmış bir içeriğin her düğümden silineceği garanti edilemez.'],
         ['Parolamı unuttum.', 'Giriş ekranında “Kimliğini geri yükle”ye tıkla (terminal arayüzünde ctrl+r) ve kurtarma kodunu yaz. AND kimliğini geri getirir ve yeni bir parola ister.'],
-        ['Kurtarma kodumu kaybettim.', 'Parolanı hâlâ biliyorsan terminal arayüzünü aç (and --terminal), Ayarlar’da Bilgi sekmesine gel ve kodu göstermek için m’ye bas. İkisini de kaybettiysen kimliğini kimse geri getiremez: bilgisayarından hiç çıkmaz.'],
+        ['Kurtarma kodumu kaybettim.', 'Parolanı hâlâ biliyorsan terminal arayüzünü aç (`and --terminal`), Ayarlar’da Bilgi sekmesine gel ve kodu göstermek için m’ye bas. İkisini de kaybettiysen kimliğini kimse geri getiremez: bilgisayarından hiç çıkmaz.'],
         ['Hangi sistemlerde çalışır?', 'Windows, Linux ve macOS. Windows’ta AND, Windows 10 ve 11 ile gelen WebView2 sayesinde kendi penceresinde açılır; Linux ve macOS’ta aynı arayüz varsayılan tarayıcında açılır, terminal arayüzü de her terminalde çalışır. Sürümler üçü için x86-64, Linux ve macOS için ayrıca ARM64 olarak derlenir.'],
         ['Ücretsiz mi?', 'Evet. AND, GNU AGPL-3.0 ile lisanslı özgür bir yazılımdır: kullanabilir, inceleyebilir, değiştirebilir ve paylaşabilirsin. Değiştirdiğin bir sürümü ağ üzerinden başkalarına sunarsan kaynak kodunu da onlara sunman gerekir.'],
-        ['Kendi eklentimi yazabilir miyim?', `Evet. Eklenti, AND’la yerel bir HTTP API üzerinden kendi anahtarıyla konuşan ve ekranlarını AND’ın kendi bileşenleriyle gösterebilen ayrı bir programdır. and eklenti yeni çalışan bir proje oluşturur; gerisini ${a(`${DOSYA}/EKLENTILER.md`, 'eklenti rehberi')} anlatır.`],
+        ['Kendi eklentimi yazabilir miyim?', `Evet. Eklenti, AND’la yerel bir HTTP API üzerinden kendi anahtarıyla konuşan ve ekranlarını AND’ın kendi bileşenleriyle gösterebilen ayrı bir programdır. <code>and eklenti yeni</code> çalışan bir proje oluşturur; gerisini ${a(`${DOSYA}/EKLENTILER.md`, 'eklenti rehberi')} anlatır.`],
         ['Moderasyonu kim yapar?', 'Anahtarı AND’ın içine gömülü olan kurucu ve kurucunun imzalı sertifikalarla atadığı moderatörler; sertifikalar her an iptal edilebilir. Konuları erken silebilir ve eşleri banlayabilirler; her düğüm her kararın imzasını denetler.'],
       ],
     },
@@ -419,18 +422,18 @@ ${ust(m)}
 <h2 id="ekran-baslik" class="gorsel-gizli">${e(m.ekranBaslik)}</h2>
 ${pencere(dil, { e, SURUM, DEPO, TEMALAR })}
 <div class="ekran-alt">
-<p class="ekran-not">${m.ekranNot}</p>
+<p class="ekran-not">${kod(m.ekranNot)}</p>
 <fieldset class="tema-sec"><legend>${e(m.tema)}</legend>${temaDugmeleri}</fieldset>
 </div>
 </section>
 <div class="sayfa">
 ${bolum(o, `<p class="giris-metni">${e(o.giris)}</p>
-${kv(o.liste.map(([dt, dd]) => [dt, dd.includes('<a ') ? dd : e(dd)]))}`)}
+${kv(o.liste.map(([dt, dd]) => [dt, kod(dd)]))}`)}
 ${bolum(n, `<p class="giris-metni">${e(n.giris)}</p>
 <figure class="cizim"><pre role="img" aria-label="${e(n.cizimEtiket)}">${cizim(dil)}</pre><figcaption>${e(n.cizimAlt)}</figcaption></figure>
 <ol class="adimlar">${n.adimlar.map(([b, r]) => `<li><strong>${e(b)}</strong> ${e(r)}</li>`).join('')}</ol>
 <p class="soluk">${e(n.son)}</p>`)}
-${bolum(ku, `<p class="giris-metni">${e(ku.giris)}</p>
+${bolum(ku, `<p class="giris-metni">${kod(ku.giris)}</p>
 <div class="indir" data-indir><p class="indir-durum">${ku.yedek}</p></div>
 <h3>${e(ku.derleBaslik)}</h3>
 <p>${e(ku.derle)}</p>
@@ -441,7 +444,7 @@ ${kv(guvenlikListesi)}
 <p>${g.son}</p>`)}
 ${bolum(p, `<p class="giris-metni">${p.giris}</p>
 <ul class="agac"><li class="agac-kok">AND-community/</li>${p.liste.map(([isim, h, ac], i) => `<li><span class="dal" aria-hidden="true">${i === p.liste.length - 1 ? '└── ' : '├── '}</span>${a(h, e(isim))}<span class="aciklama">${e(ac)}</span></li>`).join('')}</ul>`)}
-${bolum(s, `<div class="sorular">${s.liste.map(([q, c]) => `<details><summary>${e(q)}</summary><p>${c.includes('<a ') ? c : e(c)}</p></details>`).join('')}</div>`)}
+${bolum(s, `<div class="sorular">${s.liste.map(([q, c]) => `<details><summary>${e(q)}</summary><p>${kod(c)}</p></details>`).join('')}</div>`)}
 ${bolum(ka, `<p>${e(ka.metin)}</p>
 <ul class="baglantilar">${ka.baglantilar.map(([h, t]) => `<li>${a(h, e(t))}</li>`).join('')}</ul>`)}
 </div>
